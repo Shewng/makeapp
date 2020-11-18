@@ -74,8 +74,8 @@ struct PostView: View {
             }
             
             //title, description
-            Text(post.title)
-            Text(post.desc)
+            Text(post.title).padding(10)
+            Text(post.desc).padding(10)
             
         }.padding(.leading, -20)
     }

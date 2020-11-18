@@ -48,24 +48,30 @@ struct PostView: View {
     
     var body: some View {
         VStack (alignment: .leading) {
-            //bare image
-            Image(uiImage: post.firstPic)
-            .resizable()
-            .scaledToFill()
-            .frame(width:270, height: 300)
-            .border(Color.black, width: 1)
-            .clipped()
-            .padding()
-            .lineLimit(nil).padding(.leading, 16).padding(.trailing, 32)
             
-            
-            player(setURL: post.videos[0])
-            .scaledToFill()
-            .frame(width:270, height: 300)
-            .border(Color.black, width: 1)
-            .clipped()
-            .padding();
-            
+            ScrollView(.horizontal) {
+                
+                HStack() {
+                    //bare image
+                    Image(uiImage: post.firstPic)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width:270, height: 300)
+                    .border(Color.black, width: 1)
+                    .clipped()
+                    .padding()
+                    .lineLimit(nil).padding(.leading, 16).padding(.trailing, 32)
+                    
+                    
+                    player(setURL: post.videos[0])
+                    .scaledToFill()
+                    .frame(width:270, height: 300)
+                    .border(Color.black, width: 1)
+                    .clipped()
+                    .padding();
+                    
+                }.padding(10)
+            }
             
             //title, description
             Text(post.title)

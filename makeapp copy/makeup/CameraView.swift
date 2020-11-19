@@ -10,10 +10,9 @@ import SwiftUI
 import AVFoundation
 import AVKit
 
-var steps: [String] = ["Picture", "Video"]
-var imageIndex = 0;
-var frameLength = 2;
-var videos: [URL] = []
+//var imageIndex = 0;
+//var frameLength = 2;
+//var videos: [URL] = []
 
 //helper to print for debugging
 //https://stackoverflow.com/questions/56517813/how-to-print-to-xcode-console-in-swiftui
@@ -88,7 +87,7 @@ struct CameraView: View {
     @ObservedObject var model = Model() // list of pictures/videos
     
     @State private var stateVideos: [URL] = []
-    @State private var currentStep: Int = 0
+    @State private var currentStep: Int = 1
     
     @State private var bareFaceImageFinal = UIImage()
     @State private var bareFaceImage = UIImage()
@@ -106,6 +105,9 @@ struct CameraView: View {
     @State private var postTitle = "Add a Title!"
     @State private var postDesc = "Add a Description!"
     
+    @State private var imageIndex = 0
+    @State private var videos: [URL] = []
+    @State private var frameLength = 2
     @Binding var tabSelection: Int
     @Binding var postArray: [Post]
     
@@ -114,7 +116,7 @@ struct CameraView: View {
         let image = UIImage()
         model.frames.append(Frame(id: id, name: "Frame\(id)", image: image))
         frameLength = model.frames.count
-        print("After URL ", self.stateVideos)
+        
     }
     
     func addVid(b:URL){
@@ -164,6 +166,7 @@ struct CameraView: View {
                                                 
                         // START OF FRAMES
                         HStack(alignment: .center, spacing: 30) {
+
                             
                             //first image
                             Image(uiImage: self.bareFaceImage)
@@ -177,7 +180,7 @@ struct CameraView: View {
                             //array of videos
                             ForEach(self.stateVideos, id: \.self) { vid in
                                 //make a class that has a description box, frame and other things
-                                player(setURL: vid)
+                                player(setURL: vid, frameLength: self.$frameLength)
                                 .scaledToFill()
                                 .frame(width:270, height: 300)
                                 .border(Color.black, width: 1)
@@ -195,7 +198,7 @@ struct CameraView: View {
                             .padding();
                             
                         }
-                        .modifier(ScrollingHStackModifier(items: self.stateVideos.count + 2, itemWidth: 270, itemSpacing: 60, currentStep: self.$currentStep))
+                        .modifier(ScrollingHStackModifier(items: self.stateVideos.count + 2, itemWidth: 270, itemSpacing: 60, currentStep: self.$currentStep, imageIndex: self.$imageIndex, frameLength: self.$frameLength))
                         
                         
                         // END OF FRAMES
@@ -220,7 +223,7 @@ struct CameraView: View {
                             //need to add a index to see which photo to upload to
                             .sheet(isPresented: self.$isShowingImagePicker, content: {
                                 
-                                ImagePickerView(isPresented: self.$isShowingImagePicker, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos)
+                                ImagePickerView(isPresented: self.$isShowingImagePicker, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, videos: self.$videos, frameLength: self.$frameLength)
                             })
                                                         
                             Button(action: {
@@ -233,7 +236,7 @@ struct CameraView: View {
                                     .foregroundColor(.gray)
                             }
                             .sheet(isPresented: self.$showCamera, content: {
-                                ImagePickerView(isPresented: self.$showCamera, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos)
+                                ImagePickerView(isPresented: self.$showCamera, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, videos: self.$videos, frameLength: self.$frameLength)
                             })
                             
                             
@@ -248,7 +251,7 @@ struct CameraView: View {
                                     .foregroundColor(.gray)
                             }
                             .sheet(isPresented: self.$showVideoCam, content: {
-                                ImagePickerView(isPresented: self.$showVideoCam, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos)
+                                ImagePickerView(isPresented: self.$showVideoCam, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, videos: self.$videos, frameLength: self.$frameLength)
                             })
          
                             //Button(action: {
@@ -276,9 +279,18 @@ struct CameraView: View {
                             Button(action: {
                                 //collect all pictures/videos/descriptions and send to InspoView
                                 self.tabSelection = 1
-                                
                                 //self.createPost(arr: $postArray)
                                 self.createPost(firstPic: self.bareFaceImage, lastPic: self.bareFaceImageFinal, videos: self.stateVideos, title: self.postTitle, desc: self.postDesc)
+                                
+                                //reset the states
+                                self.bareFaceImage = UIImage()
+                                self.stateVideos.removeAll()
+                                self.bareFaceImageFinal = UIImage()
+                                imageIndex = 0
+                                self.currentStep = 1
+                                frameLength = 2
+                                videos = []
+                            
                             }) {
                                 Text("Finish")
                             }
@@ -307,6 +319,9 @@ struct ImagePickerView: UIViewControllerRepresentable {
     @Binding var selectedImageFinal: UIImage
     @Binding var flag: Int
     @Binding var stateVideos: [URL]
+    @Binding var imageIndex: Int
+    @Binding var videos: [URL]
+    @Binding var frameLength: Int
     
     var sourceType1: UIImagePickerController.SourceType = .savedPhotosAlbum
     var sourceType2: UIImagePickerController.SourceType = .camera
@@ -342,24 +357,23 @@ struct ImagePickerView: UIViewControllerRepresentable {
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             
-            print("ImageIndex" , imageIndex)
             //need to find index of frame
             //if index is 0 we set the first frame's image
-            if (imageIndex == 0) {
+            if (self.parent.imageIndex == 0) {
                 if let selectedImageFromPicker = info[.originalImage] as? UIImage {
                     self.parent.selectedImage = selectedImageFromPicker
                 }
             }
             
             //if on last frame
-            if (imageIndex == (frameLength - 1)) {
+            if (self.parent.imageIndex == (self.parent.frameLength - 1)) {
                 if let selectedImageFromPicker = info[.originalImage] as? UIImage {
                     self.parent.selectedImageFinal = selectedImageFromPicker
                 }
             }
             
             if let videoURL = info[.mediaURL] as? URL {
-                videos.append(videoURL)
+                self.parent.videos.append(videoURL)
                 self.parent.stateVideos.append(videoURL)
             }
             
@@ -372,9 +386,10 @@ struct ImagePickerView: UIViewControllerRepresentable {
     }
 }
 
-struct player : UIViewControllerRepresentable, Hashable {
+struct player : UIViewControllerRepresentable{
     
     var setURL:URL
+    @Binding var frameLength:Int
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<player>) -> AVPlayerViewController {
 

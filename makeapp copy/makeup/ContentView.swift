@@ -16,6 +16,17 @@ extension View {
     }
 }
 
+struct ExDivider: View {
+    
+    @State private var width: CGFloat = 0
+    
+    var body: some View {
+        Rectangle()
+            .frame(width: width)
+            .edgesIgnoringSafeArea(.horizontal)
+    }
+}
+
 struct ContentView: View {
     
     @State private var tabSelection: Int = 1

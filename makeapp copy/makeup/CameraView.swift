@@ -21,6 +21,7 @@ var videos: [URL] = []
 
 struct TextView: UIViewRepresentable {
     @Binding var text: String
+    var constantText: String = ""
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -31,11 +32,13 @@ struct TextView: UIViewRepresentable {
         let myTextView = UITextView()
         myTextView.delegate = context.coordinator
         
+        myTextView.contentInset = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 5)
+        myTextView.textColor = UIColor.lightGray
         myTextView.font = UIFont(name: "HelveticaNeue", size: 15)
         myTextView.isScrollEnabled = true
         myTextView.isEditable = true
         myTextView.isUserInteractionEnabled = true
-        myTextView.backgroundColor = UIColor(white: 0.0, alpha: 0.10)
+        //myTextView.backgroundColor = UIColor(white: 0.0, alpha: 0.05)
         
         return myTextView
     }
@@ -56,8 +59,24 @@ struct TextView: UIViewRepresentable {
             return true
         }
         
+        func textViewDidBeginEditing(_ textView: UITextView) {
+            if (textView.textColor == UIColor.lightGray) {
+                textView.text = nil
+                textView.textColor = UIColor.black
+            }
+        }
+        
+        func textViewDidEndEditing(_ textView: UITextView) {
+            if (textView.text.isEmpty && parent.constantText == "title") {
+                textView.text = "Add a Title!"
+                textView.textColor = UIColor.lightGray
+            } else if (textView.text.isEmpty && parent.constantText == "desc") {
+                textView.text = "Add a Description!"
+                textView.textColor = UIColor.lightGray
+            }
+        }
+        
         func textViewDidChange(_ textView: UITextView) {
-            print("text now: \(String(describing: textView.text!))")
             self.parent.text = textView.text
         }
     }
@@ -82,8 +101,10 @@ struct CameraView: View {
     @State private var alert = false
     @State private var backgroundOffset: CGFloat = 0
     
-    @State private var postTitle = ""
-    @State private var postDesc = ""
+    @State private var date = ""
+    
+    @State private var postTitle = "Add a Title!"
+    @State private var postDesc = "Add a Description!"
     
     @Binding var tabSelection: Int
     @Binding var postArray: [Post]
@@ -100,34 +121,33 @@ struct CameraView: View {
         stateVideos.append(b)
     }
     
-    
-    func useProxy(_ proxy: GeometryProxy) -> some View {
+    func useProxyDivider(_ proxy: GeometryProxy) -> some View {
+        let screenWidth: CGFloat = proxy.size.width
+        let screenHeight: CGFloat = proxy.size.height
         
-        var screenWidth: CGFloat = 0
-        let height1: CGFloat = 50
+        return Divider().frame(width: screenWidth)
+    }
+    
+    func useProxyTextView(_ proxy: GeometryProxy) -> some View {
+        
+        let screenWidth: CGFloat = proxy.size.width
+        let height1: CGFloat = 30
         let height2: CGFloat = 150
         
-        if (self.model.frames.count == 1) {
-            screenWidth = proxy.size.width * 0.89
-        } else {
-            screenWidth = proxy.size.width * 0.89
-        }
-        
-        return VStack(alignment: .leading) {
-            Text("Title")
-            .font(.callout).bold()
-            TextView(text: self.$postTitle)
+        return VStack() {
+            TextView(text: self.$postTitle, constantText: "title")
                 .frame(width: screenWidth, height: height1)
             
-            Text("Description")
-                .font(.callout).bold()
-            TextView(text: self.$postDesc)
+            useProxyDivider(proxy)
+            
+            TextView(text: self.$postDesc, constantText: "desc")
                 .frame(width: screenWidth, height: height2)
+            
+            useProxyDivider(proxy)
         }
     }
     
-    
-    
+        
     var body: some View {
         GeometryReader { geometry in
             
@@ -139,12 +159,11 @@ struct CameraView: View {
                         Spacer()
                         
                         // Description box
-                        self.useProxy(geometry)
+                        self.useProxyTextView(geometry)
                         
                                                 
                         // START OF FRAMES
                         HStack(alignment: .center, spacing: 30) {
-                            self.Print(type(of: self.model.frames))
                             
                             //first image
                             Image(uiImage: self.bareFaceImage)
@@ -178,11 +197,12 @@ struct CameraView: View {
                         }
                         .modifier(ScrollingHStackModifier(items: self.stateVideos.count + 2, itemWidth: 270, itemSpacing: 60, currentStep: self.$currentStep))
                         
+                        
                         // END OF FRAMES
                         HStack {
                             Text("Step " + String(self.currentStep))
                         }.padding(.bottom, 15)
-                        
+                                                
                         // START OF BUTTONS
                         HStack(spacing: 40) {
                             
@@ -240,9 +260,10 @@ struct CameraView: View {
                             //        .font(.system(size: 40.0))
                             //        .foregroundColor(.gray)
                             //}
-                        }
+                        }.padding(.bottom)
                         //END OF BUTTONS
                         Spacer()
+                        self.useProxyDivider(geometry)
 
                         
                     }.frame(maxWidth: .infinity)
@@ -258,7 +279,6 @@ struct CameraView: View {
                                 
                                 //self.createPost(arr: $postArray)
                                 self.createPost(firstPic: self.bareFaceImage, lastPic: self.bareFaceImageFinal, videos: self.stateVideos, title: self.postTitle, desc: self.postDesc)
-                                
                             }) {
                                 Text("Finish")
                             }

@@ -33,7 +33,6 @@ struct InspoView: View {
                         PostView(post: post)
                     }
                 }
-
             }
             .navigationBarTitle(Text("Allure"))
             
@@ -47,37 +46,41 @@ struct PostView: View {
     let post: Post
     
     var body: some View {
-        VStack (alignment: .leading) {
+        
+        GeometryReader { geometry in
             
-            ScrollView(.horizontal) {
+            VStack (alignment: .leading) {
                 
-                HStack() {
-                    //bare image
-                    Image(uiImage: post.firstPic)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width:270, height: 300)
-                    .border(Color.black, width: 1)
-                    .clipped()
-                    .padding()
-                    .lineLimit(nil).padding(.leading, 16).padding(.trailing, 32)
+                ScrollView(.horizontal) {
                     
-                    
-                    player(setURL: post.videos[0])
-                    .scaledToFill()
-                    .frame(width:270, height: 300)
-                    .border(Color.black, width: 1)
-                    .clipped()
-                    .padding();
-                    
-                }.padding(10)
-            }
+                    HStack() {
+                        //bare image
+                        Image(uiImage: self.post.firstPic)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: geometry.size.width, height: geometry.size.width)
+                            .border(Color.black, width: 1)
+                            .clipped()
+                            .padding()
+                        
+                        //player(setURL: post.videos[0])
+                        //.scaledToFill()
+                        //.frame(width:270, height: 300)
+                        //.border(Color.black, width: 1)
+                        //.clipped()
+                        //.padding();
+                        
+                    }.padding(10)
+                }
+                
+                //title, description
+                Text(self.post.title).padding(10)
+                Text(self.post.desc).padding(10)
             
-            //title, description
-            Text(post.title).padding(10)
-            Text(post.desc).padding(10)
+                
+            }.padding(.leading, -20)
             
-        }.padding(.leading, -20)
+        }
     }
 }
 

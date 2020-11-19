@@ -260,11 +260,11 @@ struct CameraView: View {
                             //        .font(.system(size: 40.0))
                             //        .foregroundColor(.gray)
                             //}
+                            
                         }.padding(.bottom)
                         //END OF BUTTONS
                         Spacer()
                         self.useProxyDivider(geometry)
-
                         
                     }.frame(maxWidth: .infinity)
                 } // end of scroll view

@@ -80,18 +80,18 @@ struct ScrollingHStackModifier: ViewModifier{
                         index = CGFloat(Int(index))
                         
                         let frameIndex = abs(Int(index))
-                        var tempFrame = Array(0...frameLength-1)
+                        var tempFrame = Array(0...self.frameLength-1)
                         tempFrame.reverse()
                         
                         //find index in tempFrame and return that index
                         self.imageIndex = tempFrame.firstIndex(of: frameIndex) ?? 0
                         
                         //step indicator
-                        self.currentStep = (imageIndex + 1)
+                        self.currentStep = (self.imageIndex + 1)
                         
-                        print("IMAGE", imageIndex)
+                        print("IMAGE", self.imageIndex)
                         
-                        print("currentStep", currentStep)
+                        print("currentStep", self.currentStep)
                         
                     }
                     

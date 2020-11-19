@@ -286,10 +286,10 @@ struct CameraView: View {
                                 self.bareFaceImage = UIImage()
                                 self.stateVideos.removeAll()
                                 self.bareFaceImageFinal = UIImage()
-                                imageIndex = 0
+                                self.imageIndex = 0
                                 self.currentStep = 1
-                                frameLength = 2
-                                videos = []
+                                self.frameLength = 2
+                                self.videos = []
                             
                             }) {
                                 Text("Finish")

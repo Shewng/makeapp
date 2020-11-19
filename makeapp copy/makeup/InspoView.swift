@@ -51,6 +51,7 @@ struct PostView: View {
             
             VStack (alignment: .leading) {
                 
+<<<<<<< HEAD
                 ScrollView(.horizontal) {
                     
                     HStack() {
@@ -76,6 +77,30 @@ struct PostView: View {
                 //title, description
                 Text(self.post.title).padding(10)
                 Text(self.post.desc).padding(10)
+=======
+                HStack() {
+                    //bare image
+                    Image(uiImage: post.firstPic)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width:270, height: 300)
+                    .border(Color.black, width: 1)
+                    .clipped()
+                    .padding()
+                    .lineLimit(nil).padding(.leading, 16).padding(.trailing, 32)
+                    
+                    /*
+                    player(setURL: post.videos[0])
+                    .scaledToFill()
+                    .frame(width:270, height: 300)
+                    .border(Color.black, width: 1)
+                    .clipped()
+                    .padding();
+ */
+                    
+                }.padding(10)
+            }
+>>>>>>> state-vars
             
                 
             }.padding(.leading, -20)

@@ -17,21 +17,25 @@ import SwiftUI
 import Foundation
 
 
-struct ScrollingHStackModifier: ViewModifier {
+struct ScrollingHStackModifier: ViewModifier{
     
     @State private var scrollOffset: CGFloat
     @State private var dragOffset: CGFloat
     @Binding var currentStep: Int
-    
+    @Binding var imageIndex: Int
+    @Binding var frameLength: Int
     var items: Int
     var itemWidth: CGFloat
     var itemSpacing: CGFloat
     
-    init(items: Int, itemWidth: CGFloat, itemSpacing: CGFloat, currentStep: Binding<Int>) {
+    init(items: Int, itemWidth: CGFloat, itemSpacing: CGFloat, currentStep: Binding<Int>, imageIndex: Binding<Int>, frameLength: Binding<Int>) {
         self.items = items
         self.itemWidth = itemWidth
         self.itemSpacing = itemSpacing
         self._currentStep = currentStep
+        self._imageIndex = imageIndex
+        self._frameLength = frameLength
+        
         
         // Calculate Total Content Width
         let contentWidth: CGFloat = CGFloat(items) * itemWidth + CGFloat(items - 1) * itemSpacing
@@ -74,16 +78,20 @@ struct ScrollingHStackModifier: ViewModifier {
                         print("If Swiped to", index)
                     } else {
                         index = CGFloat(Int(index))
-                        let frameIndex = abs(Int(index))
                         
+                        let frameIndex = abs(Int(index))
                         var tempFrame = Array(0...frameLength-1)
                         tempFrame.reverse()
                         
                         //find index in tempFrame and return that index
-                        imageIndex = tempFrame.firstIndex(of: frameIndex) ?? 0
+                        self.imageIndex = tempFrame.firstIndex(of: frameIndex) ?? 0
                         
                         //step indicator
-                        self.currentStep = imageIndex
+                        self.currentStep = (imageIndex + 1)
+                        
+                        print("IMAGE", imageIndex)
+                        
+                        print("currentStep", currentStep)
                         
                     }
                     

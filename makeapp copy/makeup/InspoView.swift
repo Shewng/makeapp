@@ -62,13 +62,14 @@ struct PostView: View {
                     .padding()
                     .lineLimit(nil).padding(.leading, 16).padding(.trailing, 32)
                     
-                    
+                    /*
                     player(setURL: post.videos[0])
                     .scaledToFill()
                     .frame(width:270, height: 300)
                     .border(Color.black, width: 1)
                     .clipped()
                     .padding();
+ */
                     
                 }.padding(10)
             }

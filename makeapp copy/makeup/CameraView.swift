@@ -105,9 +105,20 @@ struct CameraView: View {
     @State private var postTitle = "Add a Title!"
     @State private var postDesc = "Add a Description!"
     
+    @State private var tabIndex = 1
+    
     @State private var imageIndex = 0
     @State private var videos: [URL] = []
     @State private var frameLength = 2
+    
+    @State private var viewID = 0
+    @State private var vid = AVPlayer()
+    @State private var vidList: [AVPlayer] = []
+    
+    
+    @State var test = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!
+    
+    
     @Binding var tabSelection: Int
     @Binding var postArray: [Post]
     
@@ -149,7 +160,7 @@ struct CameraView: View {
         }
     }
     
-        
+    
     var body: some View {
         GeometryReader { geometry in
             
@@ -163,50 +174,94 @@ struct CameraView: View {
                         // Description box
                         self.useProxyTextView(geometry)
                         
-                                                
-                        // START OF FRAMES
-                        HStack(alignment: .center, spacing: 30) {
+                        
+                   //     ScrollView {
+                            if #available(iOS 14.0, *) {
+                                TabView(selection: self.$tabIndex) {
+                                    //HStack(alignment: .center, spacing: 30) {
+                                    //first image
 
-                            
-                            //first image
-                            Image(uiImage: self.bareFaceImage)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width:270, height: 300)
-                            .border(Color.black, width: 1)
-                            .clipped()
-                            .padding();
-                            
-                            //array of videos
-                            ForEach(self.stateVideos, id: \.self) { vid in
-                                //make a class that has a description box, frame and other things
-                                player(setURL: vid, frameLength: self.$frameLength)
-                                .scaledToFill()
-                                .frame(width:270, height: 300)
-                                .border(Color.black, width: 1)
-                                .clipped()
-                                .padding();
+                                    //problem with tag
+                                    Image(uiImage: self.bareFaceImage)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width:270, height: 300)
+                                        .border(Color.black, width: 1)
+                                        .clipped()
+                                        .padding()
+                                        .tag(1000)
+                            /*
+                                    //array of videos
+                                    player(setURL: self.$test)
+                                        .scaledToFill()
+                                        .frame(width:270, height: 300)
+                                        .border(Color.black, width: 1)
+                                        .clipped()
+                                        .padding()
+                                    player(setURL: self.$test)
+                                        .scaledToFill()
+                                        .frame(width:270, height: 300)
+                                        .border(Color.black, width: 1)
+                                        .clipped()
+                                        .padding()
+                                    */
+                                    
+                                    ForEach(self.stateVideos.indices, id: \.self) { i in
+                                        Print(vidList.count)
+                                        
+                                       // Text("FA " + String(viewID)).frame(width: 270, height: 300).background(Color.red)
+                                        
+                                        VStack{
+                                            player(setURL: self.$stateVideos[i])
+                                                .scaledToFill()
+                                                .frame(width:270, height: 300)
+                                                .border(Color.black, width: 1)
+                                                .clipped()
+                                                .padding()
+                                        }
+                                     }
+                                    
+                                    //.tag(self.viewID + 2)
+
+                                    Image(uiImage: self.bareFaceImageFinal)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width:270, height: 300)
+                                        .border(Color.black, width: 1)
+                                        .clipped()
+                                        .padding()
+                                        .tag(1001)
+                                    
+                                    //}
+                                    
+                                }
+                                .tabViewStyle(PageTabViewStyle())
+                                .frame(width: UIScreen.main.bounds.width, height: 300)
+                                .id(viewID)
+                                
+                            } else {
+                                // Fallback on earlier versions
                             }
-                            
-                            //last image
-                            Image(uiImage: self.bareFaceImageFinal)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width:270, height: 300)
-                            .border(Color.black, width: 1)
-                            .clipped()
-                            .padding();
-                            
-                        }
-                        .modifier(ScrollingHStackModifier(items: self.stateVideos.count + 2, itemWidth: 270, itemSpacing: 60, currentStep: self.$currentStep, imageIndex: self.$imageIndex, frameLength: self.$frameLength))
+           //             }
+                        
+                        // START OF FRAMES
+                        
+                        
+    
+                        
+                        
+                        //.modifier(ScrollingHStackModifier(items: self.stateVideos.count + 2, itemWidth: 270, itemSpacing: 60, currentStep: self.$currentStep, imageIndex: self.$imageIndex, frameLength: self.$frameLength))
                         
                         
                         // END OF FRAMES
+                        
                         HStack {
-                            Text("Step " + String(self.currentStep))
+                            Text("Step " + String(self.viewID + 1))
                         }.padding(.bottom, 15)
-                                                
+                        
+                        
                         // START OF BUTTONS
+                        Spacer()
                         HStack(spacing: 40) {
                             
                             Button(action: {
@@ -223,9 +278,9 @@ struct CameraView: View {
                             //need to add a index to see which photo to upload to
                             .sheet(isPresented: self.$isShowingImagePicker, content: {
                                 
-                                ImagePickerView(isPresented: self.$isShowingImagePicker, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, videos: self.$videos, frameLength: self.$frameLength)
+                                ImagePickerView(isPresented: self.$isShowingImagePicker, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, videos: self.$videos, frameLength: self.$frameLength, tabIndex: self.$tabIndex, viewID: self.$viewID, vid: self.$vid, vidList: self.$vidList)
                             })
-                                                        
+                            
                             Button(action: {
                                 print("Camera Was Tapped")
                                 self.condition = 2
@@ -236,33 +291,35 @@ struct CameraView: View {
                                     .foregroundColor(.gray)
                             }
                             .sheet(isPresented: self.$showCamera, content: {
-                                ImagePickerView(isPresented: self.$showCamera, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, videos: self.$videos, frameLength: self.$frameLength)
+                                ImagePickerView(isPresented: self.$showCamera, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, videos: self.$videos, frameLength: self.$frameLength, tabIndex: self.$tabIndex, viewID: self.$viewID, vid: self.$vid, vidList: self.$vidList)
                             })
                             
                             
                             Button(action: {
                                 print("Video camera Was Tapped")
+                                //self.viewID += 1
                                 self.condition = 3
                                 self.showVideoCam.toggle()
                                 self.alert.toggle()
+                                
                             }) {
                                 Image(systemName: "video.circle")
                                     .font(.system(size: 40.0))
                                     .foregroundColor(.gray)
                             }
                             .sheet(isPresented: self.$showVideoCam, content: {
-                                ImagePickerView(isPresented: self.$showVideoCam, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, videos: self.$videos, frameLength: self.$frameLength)
+                                ImagePickerView(isPresented: self.$showVideoCam, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, videos: self.$videos, frameLength: self.$frameLength, tabIndex: self.$tabIndex, viewID: self.$viewID, vid: self.$vid, vidList: self.$vidList)
                             })
-         
-                            //Button(action: {
-                            //    print("Add was tapped")
-                            //    print("State", stateVideos)
-                            //    self.addFrame()
-                            //}) {
-                            //    Image(systemName: "chevron.right.circle")
-                            //        .font(.system(size: 40.0))
-                            //        .foregroundColor(.gray)
-                            //}
+                            
+                            Button(action: {
+                                //print("Add was tapped")
+                                //print("State", stateVideos)
+                                //self.addFrame()
+                            }) {
+                                Image(systemName: "chevron.right.circle")
+                                    .font(.system(size: 40.0))
+                                    .foregroundColor(.gray)
+                            }
                             
                         }.padding(.bottom)
                         //END OF BUTTONS
@@ -271,7 +328,7 @@ struct CameraView: View {
                         
                     }.frame(maxWidth: .infinity)
                 } // end of scroll view
-
+                
                 .navigationBarTitle("Add new post", displayMode: .inline)
                 .navigationBarItems(
                     trailing:
@@ -282,15 +339,20 @@ struct CameraView: View {
                                 //self.createPost(arr: $postArray)
                                 self.createPost(firstPic: self.bareFaceImage, lastPic: self.bareFaceImageFinal, videos: self.stateVideos, title: self.postTitle, desc: self.postDesc)
                                 
+                                
                                 //reset the states
+                                //self.stateVideos.removeAll()
+                                self.vid = AVPlayer()
+                                //self.vidList.removeAll()
+                                self.viewID = 0
+                                self.tabIndex = 1000
                                 self.bareFaceImage = UIImage()
-                                self.stateVideos.removeAll()
                                 self.bareFaceImageFinal = UIImage()
                                 self.imageIndex = 0
                                 self.currentStep = 1
                                 self.frameLength = 2
                                 self.videos = []
-                            
+                                
                             }) {
                                 Text("Finish")
                             }
@@ -310,7 +372,25 @@ struct CameraView: View {
     }
 }
 
-
+struct TopPageView: View {
+    var body: some View {
+        
+        if #available(iOS 14.0, *) {
+            TabView{
+                ForEach(0..<5) { _ in
+                    VStack {
+                        RoundedRectangle(cornerRadius: 8, style: . continuous)
+                    }
+                }
+                
+            }
+            .frame(width: UIScreen.main.bounds.width, height: 300, alignment: .center)
+            .tabViewStyle(PageTabViewStyle())
+        } else {
+            // Fallback on earlier versions
+        }
+    }
+}
 
 struct ImagePickerView: UIViewControllerRepresentable {
     
@@ -322,12 +402,16 @@ struct ImagePickerView: UIViewControllerRepresentable {
     @Binding var imageIndex: Int
     @Binding var videos: [URL]
     @Binding var frameLength: Int
+    @Binding var tabIndex: Int
+    @Binding var viewID: Int
+    @Binding var vid: AVPlayer
+    @Binding var vidList: [AVPlayer]
     
     var sourceType1: UIImagePickerController.SourceType = .savedPhotosAlbum
     var sourceType2: UIImagePickerController.SourceType = .camera
     
     func makeUIViewController(context:UIViewControllerRepresentableContext<ImagePickerView>) -> UIViewController {
-            
+        
         let controller = UIImagePickerController()
         if (flag == 1) {
             controller.sourceType = sourceType1
@@ -341,7 +425,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
         controller.delegate = context.coordinator
         return controller
     }
-
+    
     
     func makeCoordinator() -> ImagePickerView.Coordinator {
         return Coordinator(parent: self)
@@ -359,20 +443,23 @@ struct ImagePickerView: UIViewControllerRepresentable {
             
             //need to find index of frame
             //if index is 0 we set the first frame's image
-            if (self.parent.imageIndex == 0) {
+            if (self.parent.tabIndex == 1000) {
                 if let selectedImageFromPicker = info[.originalImage] as? UIImage {
                     self.parent.selectedImage = selectedImageFromPicker
                 }
             }
             
             //if on last frame
-            if (self.parent.imageIndex == (self.parent.frameLength - 1)) {
+            if (self.parent.tabIndex == 1001) {
                 if let selectedImageFromPicker = info[.originalImage] as? UIImage {
                     self.parent.selectedImageFinal = selectedImageFromPicker
                 }
             }
             
             if let videoURL = info[.mediaURL] as? URL {
+                self.parent.vid = AVPlayer(url: videoURL)
+                self.parent.vidList.append(self.parent.vid)
+                self.parent.viewID += 1
                 self.parent.videos.append(videoURL)
                 self.parent.stateVideos.append(videoURL)
             }
@@ -388,17 +475,20 @@ struct ImagePickerView: UIViewControllerRepresentable {
 
 struct player : UIViewControllerRepresentable{
     
-    var setURL:URL
-    @Binding var frameLength:Int
+    @Binding var setURL:URL
+    //@Binding var frameLength:Int
+    //@Binding var vid:AVPlayer
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<player>) -> AVPlayerViewController {
-
-        frameLength += 1
+        
+        //frameLength += 1
         let controller = AVPlayerViewController()
         controller.videoGravity = .resizeAspectFill
-        
         let player1 = AVPlayer(url: setURL)
+        //let player1 = AVPlayer(url: URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!)
         controller.player = player1
+        
+        //controller.player = vid
         return controller
         
     }

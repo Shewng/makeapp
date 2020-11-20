@@ -35,6 +35,7 @@ struct InspoView: View {
                 }
             }
             .navigationBarTitle(Text("Allure"))
+            .padding(.leading, -20)
             
         }
         
@@ -74,8 +75,12 @@ struct PostView: View {
                 }
                 
                 //title, description
-                Text(self.post.title).padding(10)
-                Text(self.post.desc).padding(10)
+                Text(self.post.title)
+                    .foregroundColor(.fontColor)
+                    .font(.system(size: 18))
+                Text(self.post.desc)
+                    .foregroundColor(.fontColor)
+                    .font(.system(size: 14))
 
                 
             }.padding(.leading, -20)

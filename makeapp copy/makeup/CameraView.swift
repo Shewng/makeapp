@@ -358,6 +358,9 @@ struct CameraView: View {
                             }
                         }
                 )
+                .onTapGesture {
+                    self.hideKeyboard()
+                }
             } // end of nav bar
         }
     }

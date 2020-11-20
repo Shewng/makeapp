@@ -85,6 +85,9 @@ struct TextView: UIViewRepresentable {
 struct CameraView: View {
     
     @ObservedObject var model = Model() // list of pictures/videos
+    //@ObservedObject var vidArray = VideosData()
+    
+    @EnvironmentObject var videoSettings: VideosData
     
     @State private var stateVideos: [URL] = []
     @State private var currentStep: Int = 1
@@ -116,7 +119,6 @@ struct CameraView: View {
     @State private var vidList: [AVPlayer] = []
     
     
-    @State var test = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!
     
     
     @Binding var tabSelection: Int
@@ -182,55 +184,52 @@ struct CameraView: View {
                                     //first image
 
                                     //problem with tag
-                                    Image(uiImage: self.bareFaceImage)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width:270, height: 300)
-                                        .border(Color.black, width: 1)
-                                        .clipped()
-                                        .padding()
-                                        .tag(1000)
-                            /*
+                                    VStack{
+                                        Image(uiImage: self.bareFaceImage)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width:270, height: 300)
+                                            .border(Color.black, width: 1)
+                                            .clipped()
+                                            .padding()
+                                            .tag(1000)
+                                    }
+   
+                            
                                     //array of videos
-                                    player(setURL: self.$test)
-                                        .scaledToFill()
-                                        .frame(width:270, height: 300)
-                                        .border(Color.black, width: 1)
-                                        .clipped()
-                                        .padding()
-                                    player(setURL: self.$test)
-                                        .scaledToFill()
-                                        .frame(width:270, height: 300)
-                                        .border(Color.black, width: 1)
-                                        .clipped()
-                                        .padding()
-                                    */
+                        
                                     
-                                    ForEach(self.stateVideos.indices, id: \.self) { i in
+                                    
+                                    ForEach(self.videoSettings.vidArray.indices, id: \.self) { i in
                                         Print(vidList.count)
                                         
                                        // Text("FA " + String(viewID)).frame(width: 270, height: 300).background(Color.red)
                                         
                                         VStack{
-                                            player(setURL: self.$stateVideos[i])
+                                            player(index: i)
                                                 .scaledToFill()
                                                 .frame(width:270, height: 300)
                                                 .border(Color.black, width: 1)
                                                 .clipped()
                                                 .padding()
+                                                .tag(400)
+                        
                                         }
                                      }
                                     
                                     //.tag(self.viewID + 2)
 
-                                    Image(uiImage: self.bareFaceImageFinal)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width:270, height: 300)
-                                        .border(Color.black, width: 1)
-                                        .clipped()
-                                        .padding()
-                                        .tag(1001)
+                                    VStack{
+                                        Image(uiImage: self.bareFaceImageFinal)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width:270, height: 300)
+                                            .border(Color.black, width: 1)
+                                            .clipped()
+                                            .padding()
+                                            .tag(1001)
+                                    }
+
                                     
                                     //}
                                     
@@ -238,6 +237,7 @@ struct CameraView: View {
                                 .tabViewStyle(PageTabViewStyle())
                                 .frame(width: UIScreen.main.bounds.width, height: 300)
                                 .id(viewID)
+                                
                                 
                             } else {
                                 // Fallback on earlier versions
@@ -315,6 +315,8 @@ struct CameraView: View {
                                 //print("Add was tapped")
                                 //print("State", stateVideos)
                                 //self.addFrame()
+                                print(videoSettings.vidArray)
+                                self.vidList.remove(at: 0)
                             }) {
                                 Image(systemName: "chevron.right.circle")
                                     .font(.system(size: 40.0))
@@ -339,9 +341,10 @@ struct CameraView: View {
                                 //self.createPost(arr: $postArray)
                                 self.createPost(firstPic: self.bareFaceImage, lastPic: self.bareFaceImageFinal, videos: self.stateVideos, title: self.postTitle, desc: self.postDesc)
                                 
-                                
+                                self.videoSettings.vidArray.removeAll()
+                                print("RMOVE", self.videoSettings.vidArray)
                                 //reset the states
-                                //self.stateVideos.removeAll()
+                                self.stateVideos.removeAll()
                                 self.vid = AVPlayer()
                                 //self.vidList.removeAll()
                                 self.viewID = 0
@@ -358,9 +361,6 @@ struct CameraView: View {
                             }
                         }
                 )
-                .onTapGesture {
-                    self.hideKeyboard()
-                }
             } // end of nav bar
         }
     }
@@ -368,6 +368,8 @@ struct CameraView: View {
     func createPost(firstPic: UIImage, lastPic: UIImage, videos: [URL], title: String, desc: String) {
         // create new post
         let newPost: Post = .init(id: postArray.count, firstPic: firstPic, lastPic: lastPic, videos: videos, title: title, desc: desc)
+        
+        
         
         // append to existing array of posts
         self.postArray.append(newPost)
@@ -397,6 +399,8 @@ struct TopPageView: View {
 
 struct ImagePickerView: UIViewControllerRepresentable {
     
+    @EnvironmentObject var videoSettings: VideosData
+    
     @Binding var isPresented: Bool
     @Binding var selectedImage: UIImage
     @Binding var selectedImageFinal: UIImage
@@ -418,6 +422,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
         let controller = UIImagePickerController()
         if (flag == 1) {
             controller.sourceType = sourceType1
+            
         }
         if (flag == 2) {
             controller.sourceType = sourceType2
@@ -460,9 +465,14 @@ struct ImagePickerView: UIViewControllerRepresentable {
             }
             
             if let videoURL = info[.mediaURL] as? URL {
+                
+                self.parent.videoSettings.vidArray.append(videoURL)
+                
+                print("FA, ", self.parent.videoSettings.vidArray)
                 self.parent.vid = AVPlayer(url: videoURL)
                 self.parent.vidList.append(self.parent.vid)
                 self.parent.viewID += 1
+                print("VIEWID: ", self.parent.viewID)
                 self.parent.videos.append(videoURL)
                 self.parent.stateVideos.append(videoURL)
             }
@@ -478,7 +488,9 @@ struct ImagePickerView: UIViewControllerRepresentable {
 
 struct player : UIViewControllerRepresentable{
     
-    @Binding var setURL:URL
+    var index:Int
+    @EnvironmentObject var videoSettings: VideosData
+    //@Binding var setURL:URL
     //@Binding var frameLength:Int
     //@Binding var vid:AVPlayer
     
@@ -487,8 +499,7 @@ struct player : UIViewControllerRepresentable{
         //frameLength += 1
         let controller = AVPlayerViewController()
         controller.videoGravity = .resizeAspectFill
-        let player1 = AVPlayer(url: setURL)
-        //let player1 = AVPlayer(url: URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!)
+        let player1 = AVPlayer(url: videoSettings.vidArray[index])
         controller.player = player1
         
         //controller.player = vid
@@ -544,3 +555,7 @@ struct CamPreviewWrapper: View {
     }
 }
 
+
+class VideosData: ObservableObject {
+    @Published var vidArray: [URL] = []
+}

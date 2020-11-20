@@ -80,7 +80,7 @@ struct PostView: View {
                     .font(.system(size: 18))
                 Text(self.post.desc)
                     .foregroundColor(.fontColor)
-                    .font(.system(size: 14))
+                    .font(.system(size: 18))
 
                 
             }.padding(.leading, -20)
@@ -129,6 +129,8 @@ class Post: NSObject {
         //self.instructions = instructions
         self.title = title
         self.desc = desc
+        
+       
     }
 }
 

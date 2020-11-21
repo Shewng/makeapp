@@ -417,6 +417,25 @@ struct CameraView: View {
             })
         })
         
+        guard let lastPicture = newPost.lastPic.pngData() else { return }
+        storage.child("images").child(uuid).child("last.png").putData(lastPicture, metadata: nil, completion: {_, error in
+            guard error == nil else {
+                print("failed to upload")
+                return
+            }
+            self.storage.child("images").child(uuid).child("last.png").downloadURL(completion: { url , error in
+                guard let url = url, error == nil else {
+                    return
+                }
+                let urlString = url.absoluteURL
+                print("Downloading URL: \(urlString)")
+                UserDefaults.standard.set(urlString, forKey: "url")
+            })
+        })
+        
+        
+        
+        
         
         //convert string back to uiimage
         //let test2 = test!.toImage()

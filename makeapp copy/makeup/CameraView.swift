@@ -202,7 +202,6 @@ struct CameraView: View {
                         self.useProxyTextView(geometry)
                         
                         
-                        //     ScrollView {
                         if #available(iOS 14.0, *) {
                             TabView(selection: self.$tabIndex) {
                                 //HStack(alignment: .center, spacing: 30) {
@@ -219,31 +218,19 @@ struct CameraView: View {
                                     .padding()
                                     .tag(1000)
                                 
-                                
-                                
                                 //array of videos
-                                
-                                
-                                
                                 ForEach(self.videoSettings.vidArray.indices, id: \.self) { i in
                                     Print(vidList.count)
                                     
-                                    // Text("FA " + String(viewID)).frame(width: 270, height: 300).background(Color.red)
-                                    
-                                    VStack{
+                                    VStack {
                                         player(index: i)
                                             .scaledToFill()
                                             .frame(width:270, height: 300)
                                             .border(Color.black, width: 1)
                                             .clipped()
                                             .padding()
-                                        
-                                        
                                     }
                                 }
-                                
-                                //.tag(self.viewID + 2)
-                                
                                 
                                 Image(uiImage: self.bareFaceImageFinal)
                                     .resizable()
@@ -254,10 +241,6 @@ struct CameraView: View {
                                     .padding()
                                     .tag(1001)
                                 
-                                
-                                
-                                //}
-                                
                             }
                             .tabViewStyle(PageTabViewStyle())
                             .frame(width: UIScreen.main.bounds.width, height: 300)
@@ -267,7 +250,6 @@ struct CameraView: View {
                         } else {
                             // Fallback on earlier versions
                         }
-                        //             }
                         
 
                         //.modifier(ScrollingHStackModifier(items: self.stateVideos.count + 2, itemWidth: 270, itemSpacing: 60, currentStep: self.$currentStep, imageIndex: self.$imageIndex, frameLength: self.$frameLength))
@@ -288,7 +270,7 @@ struct CameraView: View {
                         
                         // START OF BUTTONS
                         Spacer()
-                        HStack(spacing: 40) {
+                        HStack(spacing: 20) {
                             
                             Button(action: {
                                 self.isShowingImagePicker.toggle()

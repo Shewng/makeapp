@@ -17,6 +17,7 @@
 		716429FD254102A40010F0E3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 716429FB254102A40010F0E3 /* LaunchScreen.storyboard */; };
 		71642A08254102A50010F0E3 /* makeupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71642A07254102A50010F0E3 /* makeupTests.swift */; };
 		71642A13254102A50010F0E3 /* makeupUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71642A12254102A50010F0E3 /* makeupUITests.swift */; };
+		7179E40D2569C30500E904E9 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7179E40C2569C30500E904E9 /* PostView.swift */; };
 		99A1253B0B90EDC69B75DFE3 /* Pods_makeupTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B43B8A312773D7D6AEFF02B /* Pods_makeupTests.framework */; };
 		FF26D6232541163200526438 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF26D6222541163200526438 /* CameraView.swift */; };
 		FF26D6252541169700526438 /* InspoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF26D6242541169700526438 /* InspoView.swift */; };
@@ -58,6 +59,7 @@
 		71642A0E254102A50010F0E3 /* makeupUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = makeupUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		71642A12254102A50010F0E3 /* makeupUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = makeupUITests.swift; sourceTree = "<group>"; };
 		71642A14254102A50010F0E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7179E40C2569C30500E904E9 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		7B43B8A312773D7D6AEFF02B /* Pods_makeupTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_makeupTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DACE5A2392C9807012C6AEC /* Pods_makeup_makeupUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_makeup_makeupUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC77997EF692E43BD8105C2 /* Pods-makeup.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-makeup.debug.xcconfig"; path = "Target Support Files/Pods-makeup/Pods-makeup.debug.xcconfig"; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 				716429F4254102A00010F0E3 /* ContentView.swift */,
 				FF26D6222541163200526438 /* CameraView.swift */,
 				FF26D6242541169700526438 /* InspoView.swift */,
+				7179E40C2569C30500E904E9 /* PostView.swift */,
 				FF89ED002544FE06003B7DD1 /* ScrollingStackModifier.swift */,
 				716429F6254102A40010F0E3 /* Assets.xcassets */,
 				716429FB254102A40010F0E3 /* LaunchScreen.storyboard */,
@@ -428,6 +431,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7179E40D2569C30500E904E9 /* PostView.swift in Sources */,
 				FF26D6252541169700526438 /* InspoView.swift in Sources */,
 				716429F1254102A00010F0E3 /* AppDelegate.swift in Sources */,
 				716429F3254102A00010F0E3 /* SceneDelegate.swift in Sources */,

@@ -25,12 +25,11 @@ struct InspoView: View {
                         NavigationLink(destination: CameraView(tabSelection: $tabSelection, postArray: $postArray)) {
                             Text("Somehow add this feature to images.")
                         }
-                        
                     }
                 }
                 VStack() {
                     ForEach(postArray, id: \.id) { post in
-                        PostView(post: post)
+                        InspoPostView(post: post)
                     }
                 }
             }
@@ -42,7 +41,7 @@ struct InspoView: View {
     }
 }
 
-struct PostView: View {
+struct InspoPostView: View {
     
     let post: Post
     
@@ -52,38 +51,42 @@ struct PostView: View {
             
             VStack (alignment: .leading) {
                 
-                ScrollView(.horizontal) {
-                    
-                    HStack() {
+                if #available(iOS 14.0, *) {
+                    TabView() {
                         //bare image
+                        //NavigationLink(destination: PostView(post: post) {
                         Image(uiImage: self.post.firstPic)
                             .resizable()
-                            .scaledToFill()
-                            .frame(width: geometry.size.width, height: geometry.size.width)
-                            .border(Color.black, width: 1)
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: UIScreen.main.bounds.width, height: 400)
                             .clipped()
-                            .padding()
                         
-                        //player(setURL: post.videos[0])
-                        //.scaledToFill()
-                        //.frame(width:270, height: 300)
-                        //.border(Color.black, width: 1)
-                        //.clipped()
-                        //.padding();
-                        
-                    }.padding(10)
+                        Image(uiImage: self.post.lastPic)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: UIScreen.main.bounds.width, height: 400)
+                            .clipped()
+                        //}
+                    }
+                    .tabViewStyle(PageTabViewStyle())
                 }
                 
                 //title, description
                 Text(self.post.title)
                     .foregroundColor(.fontColor)
                     .font(.system(size: 18))
+                    .padding(.leading, 10)
+                
+                Divider().frame(width: UIScreen.main.bounds.width)
+                
                 Text(self.post.desc)
                     .foregroundColor(.fontColor)
                     .font(.system(size: 18))
-
+                    .padding(.leading, 10)
                 
-            }.padding(.leading, -20)
+            }
+            .padding(.bottom, 20)
+            .border(Color.fontColor, width: 1)
             
         }
     }

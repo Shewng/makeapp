@@ -9,13 +9,34 @@
 import SwiftUI
 import AVFoundation
 import AVKit
+import Firebase
+import FirebaseDatabase
+import FirebaseStorage
 
-//var imageIndex = 0;
-//var frameLength = 2;
-//var videos: [URL] = []
 
 //helper to print for debugging
 //https://stackoverflow.com/questions/56517813/how-to-print-to-xcode-console-in-swiftui
+
+
+
+//https://stackoverflow.com/questions/50085231/uiimage-to-string-and-string-to-uiimage-in-swift
+//helper extention to convert UIImage > String
+extension UIImage {
+    func toString() -> String? {
+        let data: Data? = self.pngData()
+        return data?.base64EncodedString(options: .endLineWithLineFeed)
+    }
+}
+//helper extention to convert String > UIImage
+extension String {
+    func toImage() -> UIImage? {
+        if let data = Data(base64Encoded: self, options: .ignoreUnknownCharacters){
+            return UIImage(data: data)
+        }
+        return nil
+    }
+}
+
 
 
 struct TextView: UIViewRepresentable {
@@ -84,6 +105,10 @@ struct TextView: UIViewRepresentable {
 
 struct CameraView: View {
     
+    private let database = Database.database().reference()
+    private let storage = Storage.storage().reference()
+    
+    
     @ObservedObject var model = Model() // list of pictures/videos
     //@ObservedObject var vidArray = VideosData()
     
@@ -108,7 +133,7 @@ struct CameraView: View {
     @State private var postTitle = "Add a Title!"
     @State private var postDesc = "Add a Description!"
     
-    @State private var tabIndex = 1
+    @State private var tabIndex = 1000
     
     @State private var imageIndex = 0
     @State private var videos: [URL] = []
@@ -177,86 +202,87 @@ struct CameraView: View {
                         self.useProxyTextView(geometry)
                         
                         
-                   //     ScrollView {
-                            if #available(iOS 14.0, *) {
-                                TabView(selection: self.$tabIndex) {
-                                    //HStack(alignment: .center, spacing: 30) {
-                                    //first image
-
-                                    //problem with tag
+                        //     ScrollView {
+                        if #available(iOS 14.0, *) {
+                            TabView(selection: self.$tabIndex) {
+                                //HStack(alignment: .center, spacing: 30) {
+                                //first image
+                                
+                                //problem with tag
+                                
+                                Image(uiImage: self.bareFaceImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width:270, height: 300)
+                                    .border(Color.black, width: 1)
+                                    .clipped()
+                                    .padding()
+                                    .tag(1000)
+                                
+                                
+                                
+                                //array of videos
+                                
+                                
+                                
+                                ForEach(self.videoSettings.vidArray.indices, id: \.self) { i in
+                                    Print(vidList.count)
+                                    
+                                    // Text("FA " + String(viewID)).frame(width: 270, height: 300).background(Color.red)
+                                    
                                     VStack{
-                                        Image(uiImage: self.bareFaceImage)
-                                            .resizable()
+                                        player(index: i)
                                             .scaledToFill()
                                             .frame(width:270, height: 300)
                                             .border(Color.black, width: 1)
                                             .clipped()
                                             .padding()
-                                            .tag(1000)
-                                    }
-   
-                            
-                                    //array of videos
-                        
-                                    
-                                    
-                                    ForEach(self.videoSettings.vidArray.indices, id: \.self) { i in
-                                        Print(vidList.count)
                                         
-                                       // Text("FA " + String(viewID)).frame(width: 270, height: 300).background(Color.red)
                                         
-                                        VStack{
-                                            player(index: i)
-                                                .scaledToFill()
-                                                .frame(width:270, height: 300)
-                                                .border(Color.black, width: 1)
-                                                .clipped()
-                                                .padding()
-                                                .tag(400)
-                        
-                                        }
-                                     }
-                                    
-                                    //.tag(self.viewID + 2)
-
-                                    VStack{
-                                        Image(uiImage: self.bareFaceImageFinal)
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width:270, height: 300)
-                                            .border(Color.black, width: 1)
-                                            .clipped()
-                                            .padding()
-                                            .tag(1001)
                                     }
-
-                                    
-                                    //}
-                                    
                                 }
-                                .tabViewStyle(PageTabViewStyle())
-                                .frame(width: UIScreen.main.bounds.width, height: 300)
-                                .id(viewID)
+                                
+                                //.tag(self.viewID + 2)
                                 
                                 
-                            } else {
-                                // Fallback on earlier versions
+                                Image(uiImage: self.bareFaceImageFinal)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width:270, height: 300)
+                                    .border(Color.black, width: 1)
+                                    .clipped()
+                                    .padding()
+                                    .tag(1001)
+                                
+                                
+                                
+                                //}
+                                
                             }
-           //             }
+                            .tabViewStyle(PageTabViewStyle())
+                            .frame(width: UIScreen.main.bounds.width, height: 300)
+                            .id(viewID)
+                            
+                            
+                        } else {
+                            // Fallback on earlier versions
+                        }
+                        //             }
                         
-                        // START OF FRAMES
-                        
-                        
-    
-                        
-                        
+
                         //.modifier(ScrollingHStackModifier(items: self.stateVideos.count + 2, itemWidth: 270, itemSpacing: 60, currentStep: self.$currentStep, imageIndex: self.$imageIndex, frameLength: self.$frameLength))
                         
                         
                         // END OF FRAMES
                         
                         HStack {
-                            Text("Step " + String(self.viewID + 1))
+                            if (tabIndex == 1000) {
+                                Text("Step 1")
+                            } else if (tabIndex == 1001) {
+                                Text("Step " + String(stateVideos.count + 2))
+                            } else {
+                                Text("Step " + String(self.viewID + 1))
+                            }
                         }.padding(.bottom, 15)
                         
                         
@@ -278,7 +304,7 @@ struct CameraView: View {
                             //need to add a index to see which photo to upload to
                             .sheet(isPresented: self.$isShowingImagePicker, content: {
                                 
-                                ImagePickerView(isPresented: self.$isShowingImagePicker, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, videos: self.$videos, frameLength: self.$frameLength, tabIndex: self.$tabIndex, viewID: self.$viewID, vid: self.$vid, vidList: self.$vidList)
+                                ImagePickerView(isPresented: self.$isShowingImagePicker, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, tabIndex: self.$tabIndex, viewID: self.$viewID)
                             })
                             
                             Button(action: {
@@ -291,7 +317,7 @@ struct CameraView: View {
                                     .foregroundColor(.gray)
                             }
                             .sheet(isPresented: self.$showCamera, content: {
-                                ImagePickerView(isPresented: self.$showCamera, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, videos: self.$videos, frameLength: self.$frameLength, tabIndex: self.$tabIndex, viewID: self.$viewID, vid: self.$vid, vidList: self.$vidList)
+                                ImagePickerView(isPresented: self.$showCamera, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, tabIndex: self.$tabIndex, viewID: self.$viewID)
                             })
                             
                             
@@ -308,7 +334,7 @@ struct CameraView: View {
                                     .foregroundColor(.gray)
                             }
                             .sheet(isPresented: self.$showVideoCam, content: {
-                                ImagePickerView(isPresented: self.$showVideoCam, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, videos: self.$videos, frameLength: self.$frameLength, tabIndex: self.$tabIndex, viewID: self.$viewID, vid: self.$vid, vidList: self.$vidList)
+                                ImagePickerView(isPresented: self.$showVideoCam, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, tabIndex: self.$tabIndex, viewID: self.$viewID)
                             })
                             
                             Button(action: {
@@ -342,7 +368,6 @@ struct CameraView: View {
                                 self.createPost(firstPic: self.bareFaceImage, lastPic: self.bareFaceImageFinal, videos: self.stateVideos, title: self.postTitle, desc: self.postDesc)
                                 
                                 self.videoSettings.vidArray.removeAll()
-                                print("RMOVE", self.videoSettings.vidArray)
                                 //reset the states
                                 self.stateVideos.removeAll()
                                 self.vid = AVPlayer()
@@ -352,9 +377,6 @@ struct CameraView: View {
                                 self.bareFaceImage = UIImage()
                                 self.bareFaceImageFinal = UIImage()
                                 self.imageIndex = 0
-                                self.currentStep = 1
-                                self.frameLength = 2
-                                self.videos = []
                                 
                             }) {
                                 Text("Finish")
@@ -367,33 +389,42 @@ struct CameraView: View {
     
     func createPost(firstPic: UIImage, lastPic: UIImage, videos: [URL], title: String, desc: String) {
         // create new post
-        let newPost: Post = .init(id: postArray.count, firstPic: firstPic, lastPic: lastPic, videos: videos, title: title, desc: desc)
+        
+        //assign images and videos a unique id
+        //store the id in the real time data base so that when a post is created the inspo view updates
+        //store the images/videos in the storage and get them when view needs to update
+        
+        //create a unique id
+        let uuid = UUID().uuidString
+        let newPost: Post = .init(id: uuid, firstPic: firstPic, lastPic: lastPic, videos: videos, title: title, desc: desc)
+        
+        let postDetails: [String : String] = ["title" : newPost.title, "description" : newPost.desc]
+        database.child("uniquePost").child(uuid).setValue(postDetails)
+        
+        guard let firstPicture = newPost.firstPic.pngData() else { return }
+        storage.child("images").child(uuid).child("first.png").putData(firstPicture, metadata: nil, completion: {_, error in
+            guard error == nil else {
+                print("failed to upload")
+                return
+            }
+            self.storage.child("images").child(uuid).child("first.png").downloadURL(completion: { url , error in
+                guard let url = url, error == nil else {
+                    return
+                }
+                let urlString = url.absoluteURL
+                print("Downloading URL: \(urlString)")
+                UserDefaults.standard.set(urlString, forKey: "url")
+            })
+        })
         
         
+        //convert string back to uiimage
+        //let test2 = test!.toImage()
+        //print(test2!)
         
         // append to existing array of posts
         self.postArray.append(newPost)
         
-    }
-}
-
-struct TopPageView: View {
-    var body: some View {
-        
-        if #available(iOS 14.0, *) {
-            TabView{
-                ForEach(0..<5) { _ in
-                    VStack {
-                        RoundedRectangle(cornerRadius: 8, style: . continuous)
-                    }
-                }
-                
-            }
-            .frame(width: UIScreen.main.bounds.width, height: 300, alignment: .center)
-            .tabViewStyle(PageTabViewStyle())
-        } else {
-            // Fallback on earlier versions
-        }
     }
 }
 
@@ -407,12 +438,9 @@ struct ImagePickerView: UIViewControllerRepresentable {
     @Binding var flag: Int
     @Binding var stateVideos: [URL]
     @Binding var imageIndex: Int
-    @Binding var videos: [URL]
-    @Binding var frameLength: Int
     @Binding var tabIndex: Int
     @Binding var viewID: Int
-    @Binding var vid: AVPlayer
-    @Binding var vidList: [AVPlayer]
+
     
     var sourceType1: UIImagePickerController.SourceType = .savedPhotosAlbum
     var sourceType2: UIImagePickerController.SourceType = .camera
@@ -467,13 +495,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
             if let videoURL = info[.mediaURL] as? URL {
                 
                 self.parent.videoSettings.vidArray.append(videoURL)
-                
-                print("FA, ", self.parent.videoSettings.vidArray)
-                self.parent.vid = AVPlayer(url: videoURL)
-                self.parent.vidList.append(self.parent.vid)
                 self.parent.viewID += 1
-                print("VIEWID: ", self.parent.viewID)
-                self.parent.videos.append(videoURL)
                 self.parent.stateVideos.append(videoURL)
             }
             
@@ -490,9 +512,6 @@ struct player : UIViewControllerRepresentable{
     
     var index:Int
     @EnvironmentObject var videoSettings: VideosData
-    //@Binding var setURL:URL
-    //@Binding var frameLength:Int
-    //@Binding var vid:AVPlayer
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<player>) -> AVPlayerViewController {
         

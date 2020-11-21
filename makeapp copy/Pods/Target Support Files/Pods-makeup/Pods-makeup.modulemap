@@ -1,0 +1,6 @@
+framework module Pods_makeup {
+  umbrella header "Pods-makeup-umbrella.h"
+
+  export *
+  module * { export * }
+}

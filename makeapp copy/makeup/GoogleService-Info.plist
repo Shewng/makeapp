@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1081867809363-aquetg8g9oa2cb02eve7bqd3hul443jd.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1081867809363-aquetg8g9oa2cb02eve7bqd3hul443jd</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAkUXDlZLX2zPhXb419pyoGBL2jINT1p70</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1081867809363</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>tester1.makeup</string>
+	<key>PROJECT_ID</key>
+	<string>makeup-b3d3f</string>
+	<key>STORAGE_BUCKET</key>
+	<string>makeup-b3d3f.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1081867809363:ios:6fd7c15d9dba87b8264ca6</string>
+	<key>DATABASE_URL</key>
+	<string>https://makeup-b3d3f.firebaseio.com</string>
+</dict>
+</plist>

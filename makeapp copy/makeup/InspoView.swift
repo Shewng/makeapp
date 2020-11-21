@@ -113,15 +113,16 @@ struct InspPreviewWrapper: View {
 
 class Post: NSObject {
     
-    var id: Int
+    var id: String
     var firstPic: UIImage
     var lastPic: UIImage
     var videos: [URL]
     //var instructions: [String]
     var title: String
     var desc: String
+    
 
-    init(id: Int, firstPic: UIImage, lastPic: UIImage, videos: [URL], title: String, desc: String) {
+    init(id: String, firstPic: UIImage, lastPic: UIImage, videos: [URL], title: String, desc: String) {
         self.id = id
         self.firstPic = firstPic
         self.lastPic = lastPic
@@ -129,6 +130,7 @@ class Post: NSObject {
         //self.instructions = instructions
         self.title = title
         self.desc = desc
+        
         
        
     }

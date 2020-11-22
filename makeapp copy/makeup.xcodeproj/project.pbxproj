@@ -21,7 +21,7 @@
 		99A1253B0B90EDC69B75DFE3 /* Pods_makeupTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B43B8A312773D7D6AEFF02B /* Pods_makeupTests.framework */; };
 		FF26D6232541163200526438 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF26D6222541163200526438 /* CameraView.swift */; };
 		FF26D6252541169700526438 /* InspoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF26D6242541169700526438 /* InspoView.swift */; };
-		FF70D8E42568BBA700F2757D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FF70D8E32568BBA700F2757D /* GoogleService-Info.plist */; };
+		FF7C67CA256A416A00FA46AF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FF7C67C9256A416A00FA46AF /* GoogleService-Info.plist */; };
 		FF89ED012544FE06003B7DD1 /* ScrollingStackModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF89ED002544FE06003B7DD1 /* ScrollingStackModifier.swift */; };
 /* End PBXBuildFile section */
 
@@ -69,7 +69,7 @@
 		F9E2C1C6E383023A48BD17E9 /* Pods-makeup.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-makeup.release.xcconfig"; path = "Target Support Files/Pods-makeup/Pods-makeup.release.xcconfig"; sourceTree = "<group>"; };
 		FF26D6222541163200526438 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		FF26D6242541169700526438 /* InspoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspoView.swift; sourceTree = "<group>"; };
-		FF70D8E32568BBA700F2757D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FF7C67C9256A416A00FA46AF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FF89ED002544FE06003B7DD1 /* ScrollingStackModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollingStackModifier.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -148,7 +148,7 @@
 				FF89ED002544FE06003B7DD1 /* ScrollingStackModifier.swift */,
 				716429F6254102A40010F0E3 /* Assets.xcassets */,
 				716429FB254102A40010F0E3 /* LaunchScreen.storyboard */,
-				FF70D8E32568BBA700F2757D /* GoogleService-Info.plist */,
+				FF7C67C9256A416A00FA46AF /* GoogleService-Info.plist */,
 				716429FE254102A50010F0E3 /* Info.plist */,
 				716429F8254102A40010F0E3 /* Preview Content */,
 			);
@@ -306,7 +306,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				716429FD254102A40010F0E3 /* LaunchScreen.storyboard in Resources */,
-				FF70D8E42568BBA700F2757D /* GoogleService-Info.plist in Resources */,
+				FF7C67CA256A416A00FA46AF /* GoogleService-Info.plist in Resources */,
 				716429FA254102A40010F0E3 /* Preview Assets.xcassets in Resources */,
 				716429F7254102A40010F0E3 /* Assets.xcassets in Resources */,
 			);

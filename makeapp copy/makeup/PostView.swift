@@ -6,6 +6,9 @@
 //  Copyright © 2020 Shwong. All rights reserved.
 //
 
+
+/*
+
 import SwiftUI
 
 struct PostView: View {
@@ -13,7 +16,7 @@ struct PostView: View {
     @Binding var post: Post
     
     var body: some View {
-        
+        Text("")
     }
 }
 
@@ -22,3 +25,4 @@ struct PostView_Previews: PreviewProvider {
         PostView()
     }
 }
+*/

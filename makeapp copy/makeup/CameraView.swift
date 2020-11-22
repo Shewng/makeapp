@@ -251,7 +251,7 @@ struct CameraView: View {
                             // Fallback on earlier versions
                         }
                         
-
+                        
                         //.modifier(ScrollingHStackModifier(items: self.stateVideos.count + 2, itemWidth: 270, itemSpacing: 60, currentStep: self.$currentStep, imageIndex: self.$imageIndex, frameLength: self.$frameLength))
                         
                         
@@ -378,18 +378,60 @@ struct CameraView: View {
         
         //create a unique id
         let uuid = UUID().uuidString
+        
         let newPost: Post = .init(id: uuid, firstPic: firstPic, lastPic: lastPic, videos: videos, title: title, desc: desc)
         
+        //add to realtime database the title, desc
         let postDetails: [String : String] = ["title" : newPost.title, "description" : newPost.desc]
         database.child("uniquePost").child(uuid).setValue(postDetails)
         
+        
+        /*
+        print("HELLO?")
+        let metadata = StorageMetadata()
+        metadata.contentType = "video/quicktime"
+        let x = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!
+        let localFile = NSData(contentsOf: newPost.videos[0]) as Data?
+        
+        print("CURRENT VIDEO", newPost.videos[0])
+        
+        if let videoData = NSData(contentsOf: newPost.videos[0]) as Data? {
+            let uploadTask = storage.child("vid.mov").putData(videoData, metadata: metadata)
+        }
+        */
+        
+        //loop thru video array and upload each video
+        for index in 0..<newPost.videos.count {
+            let videoName = "vid" + String(index) + ".mov"
+            guard let vid = NSData(contentsOf: newPost.videos[index]) as Data? else { return }
+            storage.child(uuid).child("videos").child(videoName).putData(vid, metadata: nil, completion: {_, error in
+                guard error == nil else {
+                    print("failed to upload")
+                    return
+                }
+                print("Video Uploaded")
+                self.storage.child(uuid).child("videos").child(videoName).downloadURL(completion: { url , error in
+                    guard let url = url, error == nil else {
+                        return
+                    }
+                    let urlString = url.absoluteURL
+                    print("Video downloading URL: \(urlString)")
+                    UserDefaults.standard.set(urlString, forKey: "asdurl")
+                })
+            })
+        }
+        
+
+        
+        
+        //add first picture to database
         guard let firstPicture = newPost.firstPic.pngData() else { return }
-        storage.child("images").child(uuid).child("first.png").putData(firstPicture, metadata: nil, completion: {_, error in
+        storage.child(uuid).child("images").child("first.png").putData(firstPicture, metadata: nil, completion: {_, error in
             guard error == nil else {
                 print("failed to upload")
                 return
             }
-            self.storage.child("images").child(uuid).child("first.png").downloadURL(completion: { url , error in
+            self.storage.child(uuid).child("images").child("first.png").downloadURL(completion: { url , error in
                 guard let url = url, error == nil else {
                     return
                 }
@@ -399,13 +441,14 @@ struct CameraView: View {
             })
         })
         
+        //add last picture to database
         guard let lastPicture = newPost.lastPic.pngData() else { return }
-        storage.child("images").child(uuid).child("last.png").putData(lastPicture, metadata: nil, completion: {_, error in
+        storage.child(uuid).child("images").child("last.png").putData(lastPicture, metadata: nil, completion: {_, error in
             guard error == nil else {
                 print("failed to upload")
                 return
             }
-            self.storage.child("images").child(uuid).child("last.png").downloadURL(completion: { url , error in
+            self.storage.child(uuid).child("images").child("last.png").downloadURL(completion: { url , error in
                 guard let url = url, error == nil else {
                     return
                 }
@@ -414,6 +457,13 @@ struct CameraView: View {
                 UserDefaults.standard.set(urlString, forKey: "url")
             })
         })
+        
+        
+
+  
+ 
+        
+        
         
         
         
@@ -441,7 +491,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
     @Binding var imageIndex: Int
     @Binding var tabIndex: Int
     @Binding var viewID: Int
-
+    
     
     var sourceType1: UIImagePickerController.SourceType = .savedPhotosAlbum
     var sourceType2: UIImagePickerController.SourceType = .camera

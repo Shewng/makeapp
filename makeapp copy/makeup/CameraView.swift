@@ -14,31 +14,6 @@ import FirebaseDatabase
 import FirebaseStorage
 
 
-//helper to print for debugging
-//https://stackoverflow.com/questions/56517813/how-to-print-to-xcode-console-in-swiftui
-
-
-
-//https://stackoverflow.com/questions/50085231/uiimage-to-string-and-string-to-uiimage-in-swift
-//helper extention to convert UIImage > String
-extension UIImage {
-    func toString() -> String? {
-        let data: Data? = self.pngData()
-        return data?.base64EncodedString(options: .endLineWithLineFeed)
-    }
-}
-//helper extention to convert String > UIImage
-extension String {
-    func toImage() -> UIImage? {
-        if let data = Data(base64Encoded: self, options: .ignoreUnknownCharacters){
-            return UIImage(data: data)
-        }
-        return nil
-    }
-}
-
-
-
 struct TextView: UIViewRepresentable {
     @Binding var text: String
     var constantText: String = ""
@@ -385,38 +360,25 @@ struct CameraView: View {
         let postDetails: [String : String] = ["title" : newPost.title, "description" : newPost.desc]
         database.child("uniquePost").child(uuid).setValue(postDetails)
         
-        
-        /*
-        print("HELLO?")
-        let metadata = StorageMetadata()
-        metadata.contentType = "video/quicktime"
-        let x = URL(string: "http://techslides.com/demos/sample-videos/small.mp4")!
-        let localFile = NSData(contentsOf: newPost.videos[0]) as Data?
-        
-        print("CURRENT VIDEO", newPost.videos[0])
-        
-        if let videoData = NSData(contentsOf: newPost.videos[0]) as Data? {
-            let uploadTask = storage.child("vid.mov").putData(videoData, metadata: metadata)
-        }
-        */
+    
         
         //loop thru video array and upload each video
         for index in 0..<newPost.videos.count {
             let videoName = "vid" + String(index) + ".mov"
             guard let vid = NSData(contentsOf: newPost.videos[index]) as Data? else { return }
-            storage.child(uuid).child("videos").child(videoName).putData(vid, metadata: nil, completion: {_, error in
+            storage.child("uniquePost").child(uuid).child("videos").child(videoName).putData(vid, metadata: nil, completion: {_, error in
                 guard error == nil else {
                     print("failed to upload")
                     return
                 }
                 print("Video Uploaded")
-                self.storage.child(uuid).child("videos").child(videoName).downloadURL(completion: { url , error in
+                self.storage.child("uniquePost").child(uuid).child("videos").child(videoName).downloadURL(completion: { url , error in
                     guard let url = url, error == nil else {
                         return
                     }
                     let urlString = url.absoluteURL
                     print("Video downloading URL: \(urlString)")
-                    UserDefaults.standard.set(urlString, forKey: "asdurl")
+                    UserDefaults.standard.set(urlString, forKey: "videoUrl")
                 })
             })
         }
@@ -426,52 +388,37 @@ struct CameraView: View {
         
         //add first picture to database
         guard let firstPicture = newPost.firstPic.pngData() else { return }
-        storage.child(uuid).child("images").child("first.png").putData(firstPicture, metadata: nil, completion: {_, error in
+        storage.child("uniquePost").child(uuid).child("images").child("first.png").putData(firstPicture, metadata: nil, completion: {_, error in
             guard error == nil else {
                 print("failed to upload")
                 return
             }
-            self.storage.child(uuid).child("images").child("first.png").downloadURL(completion: { url , error in
+            self.storage.child("uniquePost").child(uuid).child("images").child("first.png").downloadURL(completion: { url , error in
                 guard let url = url, error == nil else {
                     return
                 }
                 let urlString = url.absoluteURL
                 print("Downloading URL: \(urlString)")
-                UserDefaults.standard.set(urlString, forKey: "url")
+                UserDefaults.standard.set(urlString, forKey: "firstImageURL")
             })
         })
         
         //add last picture to database
         guard let lastPicture = newPost.lastPic.pngData() else { return }
-        storage.child(uuid).child("images").child("last.png").putData(lastPicture, metadata: nil, completion: {_, error in
+        storage.child("uniquePost").child(uuid).child("images").child("last.png").putData(lastPicture, metadata: nil, completion: {_, error in
             guard error == nil else {
                 print("failed to upload")
                 return
             }
-            self.storage.child(uuid).child("images").child("last.png").downloadURL(completion: { url , error in
+            self.storage.child("uniquePost").child(uuid).child("images").child("last.png").downloadURL(completion: { url , error in
                 guard let url = url, error == nil else {
                     return
                 }
                 let urlString = url.absoluteURL
                 print("Downloading URL: \(urlString)")
-                UserDefaults.standard.set(urlString, forKey: "url")
+                UserDefaults.standard.set(urlString, forKey: "lastLmageURL")
             })
         })
-        
-        
-
-  
- 
-        
-        
-        
-        
-        
-        
-        
-        //convert string back to uiimage
-        //let test2 = test!.toImage()
-        //print(test2!)
         
         // append to existing array of posts
         self.postArray.append(newPost)
@@ -574,7 +521,6 @@ struct player : UIViewControllerRepresentable{
         
         //controller.player = vid
         return controller
-        
     }
     
     func updateUIViewController(_ uiViewController: AVPlayerViewController, context: UIViewControllerRepresentableContext<player>) {

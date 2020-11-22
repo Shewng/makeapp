@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -209,6 +209,8 @@
 			dependencies = (
 			);
 			name = makeup;
+			packageProductDependencies = (
+			);
 			productName = makeup;
 			productReference = 716429ED254102A00010F0E3 /* makeup.app */;
 			productType = "com.apple.product-type.application";
@@ -284,6 +286,9 @@
 				Base,
 			);
 			mainGroup = 716429E4254102A00010F0E3;
+			packageReferences = (
+				FF7C67BD256A138100FA46AF /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+			);
 			productRefGroup = 716429EE254102A00010F0E3 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -768,6 +773,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		FF7C67BD256A138100FA46AF /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 716429E5254102A00010F0E3 /* Project object */;
 }

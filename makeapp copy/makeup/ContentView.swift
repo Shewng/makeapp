@@ -16,6 +16,9 @@ extension View {
 }
 #endif
 
+
+//helper to print for debugging
+//https://stackoverflow.com/questions/56517813/how-to-print-to-xcode-console-in-swiftui
 extension View {
     func Print(_ vars: Any...) -> some View {
         for v in vars { print(v) }

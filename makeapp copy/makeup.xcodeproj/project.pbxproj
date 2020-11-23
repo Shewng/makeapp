@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5B17D7772C6119DF8A5BC7A7 /* Pods_makeup.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F512CBB10AF2F42F6037B943 /* Pods_makeup.framework */; };
 		619038A69B853A9CBC3A2DB5 /* Pods_makeup_makeupUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DACE5A2392C9807012C6AEC /* Pods_makeup_makeupUITests.framework */; };
+		715BC48F256A44B4007F6127 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 715BC48E256A44B4007F6127 /* GoogleService-Info.plist */; };
 		716429F1254102A00010F0E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 716429F0254102A00010F0E3 /* AppDelegate.swift */; };
 		716429F3254102A00010F0E3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 716429F2254102A00010F0E3 /* SceneDelegate.swift */; };
 		716429F5254102A00010F0E3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 716429F4254102A00010F0E3 /* ContentView.swift */; };
@@ -21,7 +22,6 @@
 		99A1253B0B90EDC69B75DFE3 /* Pods_makeupTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B43B8A312773D7D6AEFF02B /* Pods_makeupTests.framework */; };
 		FF26D6232541163200526438 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF26D6222541163200526438 /* CameraView.swift */; };
 		FF26D6252541169700526438 /* InspoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF26D6242541169700526438 /* InspoView.swift */; };
-		FF7C67CA256A416A00FA46AF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FF7C67C9256A416A00FA46AF /* GoogleService-Info.plist */; };
 		FF89ED012544FE06003B7DD1 /* ScrollingStackModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF89ED002544FE06003B7DD1 /* ScrollingStackModifier.swift */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +45,7 @@
 /* Begin PBXFileReference section */
 		15888BA5500B8C57A56201B5 /* Pods-makeupTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-makeupTests.release.xcconfig"; path = "Target Support Files/Pods-makeupTests/Pods-makeupTests.release.xcconfig"; sourceTree = "<group>"; };
 		2D61FBDEA2EF79232A81B55B /* Pods-makeup-makeupUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-makeup-makeupUITests.debug.xcconfig"; path = "Target Support Files/Pods-makeup-makeupUITests/Pods-makeup-makeupUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		715BC48E256A44B4007F6127 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		716429ED254102A00010F0E3 /* makeup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = makeup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		716429F0254102A00010F0E3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		716429F2254102A00010F0E3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -69,7 +70,6 @@
 		F9E2C1C6E383023A48BD17E9 /* Pods-makeup.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-makeup.release.xcconfig"; path = "Target Support Files/Pods-makeup/Pods-makeup.release.xcconfig"; sourceTree = "<group>"; };
 		FF26D6222541163200526438 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		FF26D6242541169700526438 /* InspoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspoView.swift; sourceTree = "<group>"; };
-		FF7C67C9256A416A00FA46AF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FF89ED002544FE06003B7DD1 /* ScrollingStackModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollingStackModifier.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -148,7 +148,7 @@
 				FF89ED002544FE06003B7DD1 /* ScrollingStackModifier.swift */,
 				716429F6254102A40010F0E3 /* Assets.xcassets */,
 				716429FB254102A40010F0E3 /* LaunchScreen.storyboard */,
-				FF7C67C9256A416A00FA46AF /* GoogleService-Info.plist */,
+				715BC48E256A44B4007F6127 /* GoogleService-Info.plist */,
 				716429FE254102A50010F0E3 /* Info.plist */,
 				716429F8254102A40010F0E3 /* Preview Content */,
 			);
@@ -306,7 +306,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				716429FD254102A40010F0E3 /* LaunchScreen.storyboard in Resources */,
-				FF7C67CA256A416A00FA46AF /* GoogleService-Info.plist in Resources */,
+				715BC48F256A44B4007F6127 /* GoogleService-Info.plist in Resources */,
 				716429FA254102A40010F0E3 /* Preview Assets.xcassets in Resources */,
 				716429F7254102A40010F0E3 /* Assets.xcassets in Resources */,
 			);

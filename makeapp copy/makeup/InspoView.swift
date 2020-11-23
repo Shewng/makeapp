@@ -17,22 +17,24 @@ struct InspoView: View {
     @EnvironmentObject var postList: PostList
     @Binding var tabSelection: Int
     @Binding var postArray: [Post]
+    @State var arr: [String] = []
     
-    
-
     @State var firstImage = ""
-    
     @State var lastImage = ""
     
-    func getFromFirebase(){
+    
+    func getFromFirebase() {
+        arr.removeAll()
+        
+        var array: [String] = []
         let storage = Storage.storage().reference()
         
-        print("HELLO")
         storage.child("uniquePost").listAll { (result, error) in
           if let error = error {
             // ...
             print("LOADING IMAGES ERROR")
           }
+            //PREFIX = a unique post
           for prefix in result.prefixes {
             //first image
             prefix.child("images/first.png").downloadURL { (firstImage, err) in
@@ -40,28 +42,45 @@ struct InspoView: View {
                     print("deez error", err as Any)
                     return
                 }
-                self.firstImage = "\(firstImage!)"
+                //arr.append("\(firstImage!)")
+                array.append("\(firstImage!)")
             }
             //lats image
-            prefix.child("images/last.png").downloadURL { (lastImage, err) in
-                if err != nil {
-                    print("deez error", err as Any)
-                    return
-                }
-                self.lastImage = "\(lastImage!)"
-            }
-            
+            //prefix.child("images/last.png").downloadURL { (lastImage, err) in
+            //    if err != nil {
+            //        print("deez error", err as Any)
+            //        return
+            //    }
+            //    self.lastImage = "\(lastImage!)"
+            //}
             
             
             // The prefixes under storageReference.
             // You may call listAll(completion:) recursively on them.
           }
         
-          for item in result.items {
-            print("Item: ", item)
-            // The items under storageReference.
-          }
+            //for index in 0 ..< result.items.count {
+            //    result.items[index].child("images/first.png").downloadURL { (firstImage, err) in
+            //        if err != nil {
+            //            print("deez error", err as Any)
+            //            return
+            //        } else {
+            //            arr.append("\(firstImage!)")
+            //        }
+            //    }
+            //// The items under storageReference.
+            //}
+            
+            ForEach(array, id: \.self) { pic in
+                Tester(imageURL: pic)
+            }
         }
+
+            //return VStack() {
+            //    ForEach(arr, id: \.self) { pic in
+            //        Tester(imageURL: pic)
+            //    }
+            //}
         
         //upload test
         
@@ -80,37 +99,41 @@ struct InspoView: View {
             }
             self.url2 = "\(url2!)"
         }*/
-        
     }
  
     var body: some View {
         NavigationView {
-            VStack() {
-                if firstImage != ""{
-                    ScrollView(.horizontal){
-                        HStack{
-                            showImages(imageURL: firstImage)
-                            showImages(imageURL: lastImage)
+            ScrollView(.vertical) {
+                VStack() {
+                    if firstImage != ""{
+                        ScrollView(.horizontal){
+                            HStack{
+                                //showImages(imageURL: firstImage)
+                                //showImages(imageURL: lastImage)
+                            }
                         }
                     }
+                    ForEach(arr, id: \.self) { pic in
+                        Tester(imageURL: pic)
+                    }
+                    /*
+                    ForEach(postArray, id: \.id) { post in
+                        InspoPostView(post: post)
+                    }*/
                 }
-                /*
-                ForEach(postArray, id: \.id) { post in
-                    InspoPostView(post: post)
-                }*/
-            }
-            .onAppear(){
-                
-                getFromFirebase()
+                .onAppear() {
+                    
+                    getFromFirebase()
 
- 
- 
-                /*
-                //database try to get the texts
-                database.child("uniquePost").observe(.childAdded, with: { (snapshot) in
-                    let getPost = snapshot.value as! [String: String]
-                })
-                */
+     
+     
+                    /*
+                    //database try to get the texts
+                    database.child("uniquePost").observe(.childAdded, with: { (snapshot) in
+                        let getPost = snapshot.value as! [String: String]
+                    })
+                    */
+                }
             }
             List {
                 ScrollView(.vertical) {
@@ -128,6 +151,29 @@ struct InspoView: View {
             
         }
         
+    }
+}
+
+struct Tester: View {
+        
+    @ObservedObject var imageLoader:DataLoader
+    //@Binding var array: [String]
+    @State var image: UIImage = UIImage()
+
+    init(imageURL: String) {
+        imageLoader = DataLoader(urlString:imageURL)
+    }
+
+    var body: some View {
+        VStack {
+            Image(uiImage: image)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: UIScreen.main.bounds.width, height: 400)
+                .clipped()
+        }.onReceive(imageLoader.didChange) { data in
+            self.image = UIImage(data: data) ?? UIImage()
+        }
     }
 }
 
@@ -259,7 +305,7 @@ class DataLoader: ObservableObject {
 }
 struct showImages: View {
     @ObservedObject var imageLoader:DataLoader
-    @State var image:UIImage = UIImage()
+    @State var image: UIImage = UIImage()
 
     init(imageURL: String) {
         imageLoader = DataLoader(urlString:imageURL)

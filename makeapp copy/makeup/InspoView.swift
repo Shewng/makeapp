@@ -18,6 +18,7 @@ struct InspoView: View {
     @Binding var tabSelection: Int
     @Binding var postArray: [Post]
     @State var arr: [String] = []
+    @State var lastArray: [String] = []
     
     @State var firstImage = ""
     @State var lastImage = ""
@@ -25,8 +26,8 @@ struct InspoView: View {
     
     func getFromFirebase() {
         arr.removeAll()
-        
-        var array: [String] = []
+        lastArray.removeAll()
+        //var array: [String] = []
         let storage = Storage.storage().reference()
         
         storage.child("uniquePost").listAll { (result, error) in
@@ -34,99 +35,66 @@ struct InspoView: View {
             // ...
             print("LOADING IMAGES ERROR")
           }
+            
             //PREFIX = a unique post
           for prefix in result.prefixes {
-            //first image
-            prefix.child("images/first.png").downloadURL { (firstImage, err) in
-                if err != nil {
-                    print("deez error", err as Any)
-                    return
+            prefix.child("images").listAll { (images, error) in
+                if let error = error {
+                    print("Images Error")
                 }
-                //arr.append("\(firstImage!)")
-                array.append("\(firstImage!)")
+                
+                for image in images.items{
+                    image.downloadURL { (url, error) in
+                        if let error = error {
+                            print("URL ERROR")
+                        }
+                        arr.append("\(url!)")
+                        print(arr.count)
+                        arr.sort()
+                    }
+                }
+                arr.removeAll()
+                
             }
-            //lats image
-            //prefix.child("images/last.png").downloadURL { (lastImage, err) in
-            //    if err != nil {
-            //        print("deez error", err as Any)
-            //        return
-            //    }
-            //    self.lastImage = "\(lastImage!)"
-            //}
-            
-            
-            // The prefixes under storageReference.
-            // You may call listAll(completion:) recursively on them.
           }
-        
-            //for index in 0 ..< result.items.count {
-            //    result.items[index].child("images/first.png").downloadURL { (firstImage, err) in
-            //        if err != nil {
-            //            print("deez error", err as Any)
-            //            return
-            //        } else {
-            //            arr.append("\(firstImage!)")
-            //        }
-            //    }
-            //// The items under storageReference.
-            //}
-            
-            ForEach(array, id: \.self) { pic in
-                Tester(imageURL: pic)
-            }
         }
-
-            //return VStack() {
-            //    ForEach(arr, id: \.self) { pic in
-            //        Tester(imageURL: pic)
-            //    }
-            //}
-        
-        //upload test
-        
-        /*
-        storage.child("uniquePost/9D2439D9-0912-444F-B416-45F39BBF41B0/images/first.png").downloadURL { (url, err) in
-            if err != nil {
-                print("deez error", err as Any)
-                return
-            }
-            self.url = "\(url!)"
-        }
-        storage.child("uniquePost/9D2439D9-0912-444F-B416-45F39BBF41B0/images/last.png").downloadURL { (url2, err) in
-            if err != nil {
-                print("deez error", err as Any)
-                return
-            }
-            self.url2 = "\(url2!)"
-        }*/
     }
  
     var body: some View {
         NavigationView {
             ScrollView(.vertical) {
                 VStack() {
-                    if firstImage != ""{
-                        ScrollView(.horizontal){
-                            HStack{
-                                //showImages(imageURL: firstImage)
-                                //showImages(imageURL: lastImage)
-                            }
+                    
+                    if(arr.count == 4){
+                        if #available(iOS 14.0, *) {
+                            TabView(){
+                           
+                                ForEach(0...1, id: \.self) { index in
+                                    loadImage(imageURL: arr[index])
+                                    //loadImage(imageURL: lastArray[index])
+                                    
+                                }
+                                
+                            }.tabViewStyle(PageTabViewStyle())
+                            
+                            .frame(width: UIScreen.main.bounds.width, height: 300)
+                            TabView(){
+                                
+                                ForEach(2...3, id: \.self) { index in
+                                    loadImage(imageURL: arr[index])
+                                    //loadImage(imageURL: lastArray[index])
+                                }
+                                
+                            }.tabViewStyle(PageTabViewStyle())
+                            .frame(width: UIScreen.main.bounds.width, height: 300)
+                        } else {
+                            // Fallback on earlier versions
                         }
                     }
-                    ForEach(arr, id: \.self) { pic in
-                        Tester(imageURL: pic)
-                    }
-                    /*
-                    ForEach(postArray, id: \.id) { post in
-                        InspoPostView(post: post)
-                    }*/
+
                 }
                 .onAppear() {
-                    
                     getFromFirebase()
-
-     
-     
                     /*
                     //database try to get the texts
                     database.child("uniquePost").observe(.childAdded, with: { (snapshot) in
@@ -154,7 +122,7 @@ struct InspoView: View {
     }
 }
 
-struct Tester: View {
+struct loadImage: View {
         
     @ObservedObject var imageLoader:DataLoader
     //@Binding var array: [String]
@@ -323,3 +291,4 @@ struct showImages: View {
         }
     }
 }
+

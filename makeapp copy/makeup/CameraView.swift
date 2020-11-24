@@ -118,7 +118,7 @@ struct CameraView: View {
     @State private var vid = AVPlayer()
     @State private var vidList: [AVPlayer] = []
     
-    
+    var pageIndex = 0
     
     
     @Binding var tabSelection: Int
@@ -184,14 +184,19 @@ struct CameraView: View {
                                 
                                 //problem with tag
                                 
-                                Image(uiImage: self.bareFaceImage)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width:270, height: 300)
-                                    .border(Color.black, width: 1)
-                                    .clipped()
-                                    .padding()
-                                    .tag(1000)
+                                VStack{
+                                    Image(uiImage: self.bareFaceImage)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width:270, height: 300)
+                                        .border(Color.black, width: 1)
+                                        .clipped()
+                                        .padding()
+                                        .tag(1000)
+                                    Text("Step 1")
+                                    
+                                }
+
                                 
                                 //array of videos
                                 ForEach(self.videoSettings.vidArray.indices, id: \.self) { i in
@@ -204,44 +209,64 @@ struct CameraView: View {
                                             .border(Color.black, width: 1)
                                             .clipped()
                                             .padding()
+                                        Text("Step " + String(i + 2))
                                     }
                                 }
                                 
-                                Image(uiImage: self.bareFaceImageFinal)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width:270, height: 300)
-                                    .border(Color.black, width: 1)
-                                    .clipped()
-                                    .padding()
-                                    .tag(1001)
+                                VStack{
+                                    Rectangle()
+                                        .fill(Color.white)
+                                        .frame(width:270, height: 300)
+                                        .border(Color.black, width: 1)
+                                        .padding()
+                                        .clipped()
+                                        .tag(1002)
+                                    Text("Add Video Here!")
+                                }
+
+                                    
+                                
+                                VStack{
+                                    Image(uiImage: self.bareFaceImageFinal)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width:270, height: 300)
+                                        .border(Color.black, width: 1)
+                                        .clipped()
+                                        .padding()
+                                        .tag(1001)
+                                    Text("Step " + String(stateVideos.count + 2))
+                                }
                                 
                             }
                             .tabViewStyle(PageTabViewStyle())
-                            .frame(width: UIScreen.main.bounds.width, height: 300)
+                            .frame(width: UIScreen.main.bounds.width, height: 370)
                             .id(viewID)
                             
                             
                         } else {
                             // Fallback on earlier versions
                         }
-                        
-                        
+
                         //.modifier(ScrollingHStackModifier(items: self.stateVideos.count + 2, itemWidth: 270, itemSpacing: 60, currentStep: self.$currentStep, imageIndex: self.$imageIndex, frameLength: self.$frameLength))
                         
                         
                         // END OF FRAMES
                         
+                        /*
                         HStack {
                             if (tabIndex == 1000) {
                                 Text("Step 1")
                             } else if (tabIndex == 1001) {
                                 Text("Step " + String(stateVideos.count + 2))
-                            } else {
-                                Text("Step " + String(self.viewID + 1))
+                            } else if (tabIndex == 1002){
+                                Text("Add Video Here!")
+                            }
+                            else {
+                                Text("Step " + String(pageIndex))
                             }
                         }.padding(.bottom, 15)
-                        
+                        */
                         
                         // START OF BUTTONS
                         Spacer()
@@ -329,6 +354,8 @@ struct CameraView: View {
                                 self.stateVideos.removeAll()
                                 self.vid = AVPlayer()
                                 //self.vidList.removeAll()
+                                self.postTitle = ""
+                                self.postDesc = ""
                                 self.viewID = 0
                                 self.tabIndex = 1000
                                 self.bareFaceImage = UIImage()
@@ -491,10 +518,10 @@ struct ImagePickerView: UIViewControllerRepresentable {
             }
             
             if let videoURL = info[.mediaURL] as? URL {
-                
                 self.parent.videoSettings.vidArray.append(videoURL)
                 self.parent.viewID += 1
                 self.parent.stateVideos.append(videoURL)
+                self.parent.tabIndex = 1002
             }
             
             self.parent.isPresented = false

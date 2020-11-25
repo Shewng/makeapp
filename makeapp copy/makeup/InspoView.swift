@@ -12,22 +12,62 @@ import FirebaseDatabase
 import FirebaseStorage
 import Combine
 
+
+extension Array where Element: Hashable {
+    func removingDuplicates() -> [Element] {
+        var addedDict = [Element: Bool]()
+
+        return filter {
+            addedDict.updateValue(true, forKey: $0) == nil
+        }
+    }
+
+    mutating func removeDuplicates() {
+        self = self.removingDuplicates()
+    }
+}
+
+
 struct InspoView: View {
     
     @EnvironmentObject var postList: PostList
     @Binding var tabSelection: Int
     @Binding var postArray: [Post]
-    @State var arr: [String] = []
-    @State var lastArray: [String] = []
     
-    @State var firstImage = ""
-    @State var lastImage = ""
+    @State var imageArray: [String] = []
+    @State var dataArray: [String] = []
+
+    
+    func getStrings(){
+        dataArray.removeAll()
+        var ref: DatabaseReference!
+        
+        ref = Database.database().reference()
+        
+        
+        ref.child("uniquePost").observeSingleEvent(of: .value) { (snapshot) in
+            
+            if let result = snapshot.children.allObjects as? [DataSnapshot] {
+                
+                for child in result {
+                    let newRef = ref.child("uniquePost").child(child.key)
+                    
+                    newRef.observeSingleEvent(of: .value) { (data) in
+                        if let newResult = data.children.allObjects as? [DataSnapshot]{
+                            for strings in newResult {
+                                dataArray.append(strings.value! as! String)
+                                dataArray = dataArray.removingDuplicates()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     
     func getFromFirebase() {
-        arr.removeAll()
-        lastArray.removeAll()
-        //var array: [String] = []
+        imageArray.removeAll()
         let storage = Storage.storage().reference()
         
         storage.child("uniquePost").listAll { (result, error) in
@@ -43,17 +83,19 @@ struct InspoView: View {
                     print("Images Error")
                 }
                 
-                for image in images.items{
+                for image in images.items {
                     image.downloadURL { (url, error) in
                         if let error = error {
                             print("URL ERROR")
                         }
-                        arr.append("\(url!)")
-                        print(arr.count)
-                        arr.sort()
+                        imageArray.append("\(url!)")
+                        imageArray = imageArray.removingDuplicates()
+                        print(imageArray.count)
+                        
+                        imageArray.sort()
                     }
                 }
-                arr.removeAll()
+                //arr.removeAll()
                 
             }
           }
@@ -62,70 +104,107 @@ struct InspoView: View {
  
     var body: some View {
         NavigationView {
-            ScrollView(.vertical) {
-                VStack() {
-                    
-                    if(arr.count == 4){
+            
+            // WITH DATABASE
+            List {
+                ScrollView(.vertical) {
+                    Print("array= " , dataArray)
+                    VStack() {
+                        
                         if #available(iOS 14.0, *) {
-                            TabView(){
-                           
-                                ForEach(0...1, id: \.self) { index in
-                                    loadImage(imageURL: arr[index])
-                                    //loadImage(imageURL: lastArray[index])
+                            ForEach(0..<((imageArray.count/2)), id: \.self){ index in
+                                
+                                let desc = index * 3
+                                let date = (index * 3) + 1
+                                let title = (index * 3) + 2
+                                
+                                //DATE
+                                Text(dataArray[date])
+                                    .foregroundColor(.fontColor)
+                                    .font(.custom("Lora-Regular", size: 12))
+                                    //.offset(x: 265, y: 5)
+                                    //.padding(.top, 5)
+                                
+                                //IMAGES
+                                TabView {
+                                    ForEach(0...1, id: \.self) { i in
+                                        let x = ((index * 2) + i)
+                                        loadImage(imageURL: imageArray[x])
+                                    }
                                     
                                 }
+                                .tabViewStyle(PageTabViewStyle())
+                                .frame(width: UIScreen.main.bounds.width, height: 300)
                                 
-                            }.tabViewStyle(PageTabViewStyle())
-                            
-                            .frame(width: UIScreen.main.bounds.width, height: 300)
-                            TabView(){
                                 
-                                ForEach(2...3, id: \.self) { index in
-                                    loadImage(imageURL: arr[index])
-                                    //loadImage(imageURL: lastArray[index])
-                                }
+                                //TITLE/DESCRIPTIONS
+                                Text(dataArray[title])
+                                    //.foregroundColor(.fontColor)
+                                    .font(.custom("Lora-Regular", size: 18))
+                                    //.padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
                                 
-                            }.tabViewStyle(PageTabViewStyle())
-                            .frame(width: UIScreen.main.bounds.width, height: 300)
+                                //Divider().frame(width: UIScreen.main.bounds.width)
+                                
+                                Text(dataArray[desc])
+                                    .foregroundColor(.fontColor)
+                                    .font(.custom("Lora-Regular", size: 14))
+                                    //.padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
+                                
+                                
+                                
+                            }
                         } else {
                             // Fallback on earlier versions
                         }
+                        
                     }
-
-                }
-                .onAppear() {
-                    getFromFirebase()
-                    /*
-                    //database try to get the texts
-                    database.child("uniquePost").observe(.childAdded, with: { (snapshot) in
-                        let getPost = snapshot.value as! [String: String]
-                    })
-                    */
+                    .onAppear() {
+                        getFromFirebase()
+                        getStrings()
+                    }
                 }
             }
-            List {
-                ScrollView(.vertical) {
-                    VStack () {
-                        
-                        
-                        NavigationLink(destination: CameraView(tabSelection: $tabSelection, postArray: $postArray)) {
-                            Text("Somehow add this feature to images.")
+            
+            // LOCAL
+            if #available(iOS 14.0, *) {
+                List {
+                    ScrollView(.vertical) {
+                        VStack () {
+                            
+                            NavigationLink(destination: CameraView(tabSelection: $tabSelection, postArray: $postArray)) {
+                                Text("Somehow add this feature to images.")
+                            }
+                            
+                            //VStack() {
+                            //    ForEach(postArray, id: \.id) { post in
+                            //        InspoPostView(post: post)
+                            //    }
+                            //}
                         }
                     }
                 }
+                .padding(.leading, -20)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        HStack() {
+                            Image(systemName: "wand.and.stars.inverse")
+                            Text("ALLURE")
+                                .font(Font.custom("Exo2-Light", size: 24))
+                                //.font(.system(size: 24))
+                        }
+                    }
+                }
+            } else {
+                // Fallback on earlier versions
             }
-            .navigationBarTitle(Text("Allure"))
-            .padding(.leading, -20)
-            
         }
-        
     }
 }
 
 struct loadImage: View {
         
     @ObservedObject var imageLoader:DataLoader
-    //@Binding var array: [String]
     @State var image: UIImage = UIImage()
 
     init(imageURL: String) {
@@ -151,59 +230,67 @@ struct InspoPostView: View {
     
     var body: some View {
         
-        GeometryReader { geometry in
+        VStack (alignment: .leading) {
             
-            VStack (alignment: .leading) {
-                
+            Text(post.date)
+                .foregroundColor(.fontColor)
+                .font(.custom("Lora-Regular", size: 12))
+                .offset(x: 265, y: 5)
+                .padding(.top, 5)
+            
+            NavigationLink(destination: PostView(post: post)) {
                 if #available(iOS 14.0, *) {
                     TabView() {
                         //bare image
-                        //NavigationLink(destination: PostView(post: post) {
-                        Image(uiImage: self.post.firstPic)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: UIScreen.main.bounds.width, height: 400)
-                            .clipped()
-                        
-                        Image(uiImage: self.post.lastPic)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: UIScreen.main.bounds.width, height: 400)
-                            .clipped()
-                        //}
-                    }
+                        //
+                            Image(uiImage: self.post.firstPic)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: UIScreen.main.bounds.width, height: 400)
+                                .clipped()
+                            
+                            Image(uiImage: self.post.lastPic)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: UIScreen.main.bounds.width, height: 400)
+                                .clipped()
+                        }
+                    //}
                     .tabViewStyle(PageTabViewStyle())
+                    
+                } else {
+                    // Fallback on earlier versions
                 }
-                
-                //title, description
-                Text(self.post.title)
-                    .foregroundColor(.fontColor)
-                    .font(.system(size: 18))
-                    .padding(.leading, 10)
-                
-                Divider().frame(width: UIScreen.main.bounds.width)
-                
-                Text(self.post.desc)
-                    .foregroundColor(.fontColor)
-                    .font(.system(size: 18))
-                    .padding(.leading, 10)
-                
             }
-            .padding(.bottom, 20)
-            .border(Color.fontColor, width: 1)
             
+            //title, description
+            Text(self.post.title)
+                //.foregroundColor(.fontColor)
+                .font(.custom("Lora-Regular", size: 18))
+                .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
+            
+            Divider().frame(width: UIScreen.main.bounds.width)
+            
+            Text(self.post.desc)
+                .foregroundColor(.fontColor)
+                .font(.custom("Lora-Regular", size: 14))
+                .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
+        
         }
+        .padding(.bottom, 20)
+        .border(Color.fontColor, width: 1)
+        
     }
 }
 
 
 struct InspoView_Previews: PreviewProvider {
     static var previews: some View {
-        InspPreviewWrapper();
+        InspoPreviewWrapper();
     }
 }
 
-struct InspPreviewWrapper: View {
+struct InspoPreviewWrapper: View {
     @State(initialValue: 1) var code: Int
     @State(initialValue: []) var arr: [Post]
     
@@ -225,16 +312,18 @@ class Post: NSObject {
     var lastPic: UIImage
     var videos: [URL]
     //var instructions: [String]
+    var date: String
     var title: String
     var desc: String
     
 
-    init(id: String, firstPic: UIImage, lastPic: UIImage, videos: [URL], title: String, desc: String) {
+    init(id: String, firstPic: UIImage, lastPic: UIImage, videos: [URL], date: String, title: String, desc: String) {
         self.id = id
         self.firstPic = firstPic
         self.lastPic = lastPic
         self.videos = videos
         //self.instructions = instructions
+        self.date = date
         self.title = title
         self.desc = desc
 
@@ -269,26 +358,6 @@ class DataLoader: ObservableObject {
             }
         }
         task.resume()
-    }
-}
-struct showImages: View {
-    @ObservedObject var imageLoader:DataLoader
-    @State var image: UIImage = UIImage()
-
-    init(imageURL: String) {
-        imageLoader = DataLoader(urlString:imageURL)
-    }
-
-    var body: some View {
-        VStack {
-            Image(uiImage: image)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: UIScreen.main.bounds.width, height: 400)
-                .clipped()
-        }.onReceive(imageLoader.didChange) { data in
-            self.image = UIImage(data: data) ?? UIImage()
-        }
     }
 }
 

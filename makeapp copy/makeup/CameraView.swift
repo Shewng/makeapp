@@ -30,10 +30,9 @@ struct TextView: UIViewRepresentable {
         myTextView.contentInset = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 5)
         myTextView.textColor = UIColor.lightGray
         myTextView.font = UIFont(name: "HelveticaNeue", size: 15)
-        myTextView.isScrollEnabled = true
         myTextView.isEditable = true
         myTextView.isUserInteractionEnabled = true
-        //myTextView.backgroundColor = UIColor(white: 0.0, alpha: 0.05)
+        myTextView.isScrollEnabled = true
         
         return myTextView
     }
@@ -158,7 +157,22 @@ struct CameraView: View {
             TextView(text: self.$postDesc, constantText: "desc")
                 .frame(width: screenWidth, height: height2)
             
-            useProxyDivider(proxy)
+        }
+    }
+    
+    func getDate() -> some View {
+        let currentDate = Date()
+        let format = DateFormatter()
+        format.dateStyle = .long
+        
+        let d = format.string(from: currentDate)
+        date = d    // set state var
+        
+        return VStack(alignment: .leading) {
+            Text(d)
+                .foregroundColor(.fontColor)
+                .font(.system(size: 12))
+                .offset(x: -125)
         }
     }
     
@@ -176,27 +190,27 @@ struct CameraView: View {
                         // Description box
                         self.useProxyTextView(geometry)
                         
+                        // Date
+                        self.getDate()
+                        
+                        self.useProxyDivider(geometry)
                         
                         if #available(iOS 14.0, *) {
                             TabView(selection: self.$tabIndex) {
-                                //HStack(alignment: .center, spacing: 30) {
+                                
                                 //first image
-                                
-                                //problem with tag
-                                
                                 VStack{
                                     Image(uiImage: self.bareFaceImage)
                                         .resizable()
                                         .scaledToFill()
-                                        .frame(width:270, height: 300)
+                                        .frame(width: 300, height: 300)
                                         .border(Color.black, width: 1)
                                         .clipped()
                                         .padding()
-                                        .tag(1000)
+                                        
                                     Text("Step 1")
-                                    
                                 }
-
+                                .tag(1000)
                                 
                                 //array of videos
                                 ForEach(self.videoSettings.vidArray.indices, id: \.self) { i in
@@ -205,7 +219,7 @@ struct CameraView: View {
                                     VStack {
                                         player(index: i)
                                             .scaledToFill()
-                                            .frame(width:270, height: 300)
+                                            .frame(width: 300, height: 300)
                                             .border(Color.black, width: 1)
                                             .clipped()
                                             .padding()
@@ -216,27 +230,27 @@ struct CameraView: View {
                                 VStack{
                                     Rectangle()
                                         .fill(Color.white)
-                                        .frame(width:270, height: 300)
+                                        .frame(width: 300, height: 300)
                                         .border(Color.black, width: 1)
                                         .padding()
                                         .clipped()
-                                        .tag(1002)
+                                        
                                     Text("Add Video Here!")
                                 }
-
-                                    
+                                .tag(1002)
                                 
                                 VStack{
                                     Image(uiImage: self.bareFaceImageFinal)
                                         .resizable()
                                         .scaledToFill()
-                                        .frame(width:270, height: 300)
+                                        .frame(width: 300, height: 300)
                                         .border(Color.black, width: 1)
                                         .clipped()
                                         .padding()
-                                        .tag(1001)
+                                        
                                     Text("Step " + String(stateVideos.count + 2))
                                 }
+                                .tag(1001)
                                 
                             }
                             .tabViewStyle(PageTabViewStyle())
@@ -285,7 +299,6 @@ struct CameraView: View {
                             
                             //need to add a index to see which photo to upload to
                             .sheet(isPresented: self.$isShowingImagePicker, content: {
-                                
                                 ImagePickerView(isPresented: self.$isShowingImagePicker, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, tabIndex: self.$tabIndex, viewID: self.$viewID)
                             })
                             
@@ -319,17 +332,6 @@ struct CameraView: View {
                                 ImagePickerView(isPresented: self.$showVideoCam, selectedImage: self.$bareFaceImage, selectedImageFinal: self.$bareFaceImageFinal, flag: self.$condition, stateVideos: self.$stateVideos, imageIndex: self.$imageIndex, tabIndex: self.$tabIndex, viewID: self.$viewID)
                             })
                             
-                            Button(action: {
-                                //print("Add was tapped")
-                                //print("State", stateVideos)
-                                //self.addFrame()
-                                print(videoSettings.vidArray)
-                                self.vidList.remove(at: 0)
-                            }) {
-                                Image(systemName: "chevron.right.circle")
-                                    .font(.system(size: 40.0))
-                                    .foregroundColor(.gray)
-                            }
                             
                         }.padding(.bottom)
                         //END OF BUTTONS
@@ -347,13 +349,14 @@ struct CameraView: View {
                                 //collect all pictures/videos/descriptions and send to InspoView
                                 self.tabSelection = 1
                                 //self.createPost(arr: $postArray)
-                                self.createPost(firstPic: self.bareFaceImage, lastPic: self.bareFaceImageFinal, videos: self.stateVideos, title: self.postTitle, desc: self.postDesc)
+                                self.createPost(firstPic: self.bareFaceImage, lastPic: self.bareFaceImageFinal, videos: self.stateVideos, currentDate: self.date, title: self.postTitle, desc: self.postDesc)
                                 
                                 self.videoSettings.vidArray.removeAll()
                                 //reset the states
                                 self.stateVideos.removeAll()
                                 self.vid = AVPlayer()
                                 //self.vidList.removeAll()
+                                self.date = ""
                                 self.postTitle = ""
                                 self.postDesc = ""
                                 self.viewID = 0
@@ -371,7 +374,7 @@ struct CameraView: View {
         }
     }
     
-    func createPost(firstPic: UIImage, lastPic: UIImage, videos: [URL], title: String, desc: String) {
+    func createPost(firstPic: UIImage, lastPic: UIImage, videos: [URL], currentDate: String, title: String, desc: String) {
         // create new post
         
         //assign images and videos a unique id
@@ -381,8 +384,9 @@ struct CameraView: View {
         //create a unique id
         let uuid = UUID().uuidString
         
-        let newPost: Post = .init(id: uuid, firstPic: firstPic, lastPic: lastPic, videos: videos, title: title, desc: desc)
+        let newPost: Post = .init(id: uuid, firstPic: firstPic, lastPic: lastPic, videos: videos, date: currentDate, title: title, desc: desc)
         
+        /*
         //add to realtime database the title, desc
         let postDetails: [String : String] = ["title" : newPost.title, "description" : newPost.desc]
         database.child("uniquePost").child(uuid).setValue(postDetails)
@@ -446,6 +450,7 @@ struct CameraView: View {
                 UserDefaults.standard.set(urlString, forKey: "lastLmageURL")
             })
         })
+        */
         
         // append to existing array of posts
         self.postArray.append(newPost)

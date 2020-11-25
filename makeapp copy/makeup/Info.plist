@@ -5,6 +5,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Lora-Regular.ttf</string>
+		<string>Lora-Medium.ttf</string>
 		<string>Exo2-Light.ttf</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>

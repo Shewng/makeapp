@@ -37,8 +37,10 @@ struct InspoView: View {
     @State var imageArray: [String] = []
     @State var dataArray: [String] = []
 
-    
-    func getStrings(){
+    /**
+     Get the strings in the database and put into
+     */
+    func getStrings() {
         dataArray.removeAll()
         var ref: DatabaseReference!
         
@@ -105,13 +107,14 @@ struct InspoView: View {
     var body: some View {
         NavigationView {
             
+            /*
             // WITH DATABASE
-            List {
-                ScrollView(.vertical) {
-                    Print("array= " , dataArray)
-                    VStack() {
-                        
-                        if #available(iOS 14.0, *) {
+            if #available(iOS 14.0, *) {
+                List {
+                    ScrollView(.vertical) {
+                        Print("array= " , dataArray)
+                        VStack() {
+                            
                             ForEach(0..<((imageArray.count/2)), id: \.self){ index in
                                 
                                 let desc = index * 3
@@ -121,9 +124,10 @@ struct InspoView: View {
                                 //DATE
                                 Text(dataArray[date])
                                     .foregroundColor(.fontColor)
-                                    .font(.custom("Lora-Regular", size: 12))
+                                    //.font(.custom("Lora-Regular", size: 12))
                                     //.offset(x: 265, y: 5)
                                     //.padding(.top, 5)
+                                
                                 
                                 //IMAGES
                                 TabView {
@@ -131,55 +135,31 @@ struct InspoView: View {
                                         let x = ((index * 2) + i)
                                         loadImage(imageURL: imageArray[x])
                                     }
-                                    
                                 }
                                 .tabViewStyle(PageTabViewStyle())
-                                .frame(width: UIScreen.main.bounds.width, height: 300)
+                                //.frame(width: UIScreen.main.bounds.width, height: 300)
                                 
                                 
                                 //TITLE/DESCRIPTIONS
                                 Text(dataArray[title])
-                                    //.foregroundColor(.fontColor)
-                                    .font(.custom("Lora-Regular", size: 18))
+                                    .foregroundColor(.fontColor)
+                                    //.font(.custom("Lora-Regular", size: 18))
                                     //.padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
                                 
-                                //Divider().frame(width: UIScreen.main.bounds.width)
+                                Divider().frame(width: UIScreen.main.bounds.width)
                                 
                                 Text(dataArray[desc])
                                     .foregroundColor(.fontColor)
-                                    .font(.custom("Lora-Regular", size: 14))
+                                    //.font(.custom("Lora-Regular", size: 14))
                                     //.padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
                                 
-                                
-                                
                             }
-                        } else {
-                            // Fallback on earlier versions
+                            
                         }
-                        
-                    }
-                    .onAppear() {
-                        getFromFirebase()
-                        getStrings()
-                    }
-                }
-            }
-            
-            // LOCAL
-            if #available(iOS 14.0, *) {
-                List {
-                    ScrollView(.vertical) {
-                        VStack () {
+                        .onAppear() {
+                            getStrings()
+                            getFromFirebase()
                             
-                            NavigationLink(destination: CameraView(tabSelection: $tabSelection, postArray: $postArray)) {
-                                Text("Somehow add this feature to images.")
-                            }
-                            
-                            //VStack() {
-                            //    ForEach(postArray, id: \.id) { post in
-                            //        InspoPostView(post: post)
-                            //    }
-                            //}
                         }
                     }
                 }
@@ -198,7 +178,45 @@ struct InspoView: View {
             } else {
                 // Fallback on earlier versions
             }
+             */
+            
+             
+            // LOCAL
+            if #available(iOS 14.0, *) {
+                List {
+                    ScrollView(.vertical) {
+                        VStack () {
+                            
+                            NavigationLink(destination: CameraView(tabSelection: $tabSelection, postArray: $postArray)) {
+                                Text("Somehow add this feature to images.")
+                            }
+                            
+                            VStack() {
+                                ForEach(postArray, id: \.id) { post in
+                                    InspoPostView(post: post)
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding(.leading, -20)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        HStack() {
+                            Image(systemName: "wand.and.stars.inverse")
+                            Text("ALLURE")
+                                .font(Font.custom("Exo2-Light", size: 24))
+                                //.font(.system(size: 24))
+                        }
+                    }
+                }
+            } else {
+                // Fallback on earlier versions
+            }
+            
         }
+        
     }
 }
 
@@ -235,7 +253,7 @@ struct InspoPostView: View {
             Text(post.date)
                 .foregroundColor(.fontColor)
                 .font(.custom("Lora-Regular", size: 12))
-                .offset(x: 265, y: 5)
+                .offset(x: 290, y: 5)
                 .padding(.top, 5)
             
             NavigationLink(destination: PostView(post: post)) {
@@ -243,17 +261,17 @@ struct InspoPostView: View {
                     TabView() {
                         //bare image
                         //
-                            Image(uiImage: self.post.firstPic)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: UIScreen.main.bounds.width, height: 400)
-                                .clipped()
-                            
-                            Image(uiImage: self.post.lastPic)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: UIScreen.main.bounds.width, height: 400)
-                                .clipped()
+                        Image(uiImage: self.post.firstPic)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: UIScreen.main.bounds.width, height: 400)
+                            .clipped()
+                        
+                        Image(uiImage: self.post.lastPic)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: UIScreen.main.bounds.width, height: 400)
+                            .clipped()
                         }
                     //}
                     .tabViewStyle(PageTabViewStyle())
@@ -266,7 +284,7 @@ struct InspoPostView: View {
             //title, description
             Text(self.post.title)
                 //.foregroundColor(.fontColor)
-                .font(.custom("Lora-Regular", size: 18))
+                .font(.custom("Lora-Medium", size: 18))
                 .padding(EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10))
             
             Divider().frame(width: UIScreen.main.bounds.width)
@@ -278,7 +296,7 @@ struct InspoPostView: View {
         
         }
         .padding(.bottom, 20)
-        .border(Color.fontColor, width: 1)
+        .border(Color.gray, width: 1)
         
     }
 }

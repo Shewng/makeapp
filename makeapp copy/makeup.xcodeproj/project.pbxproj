@@ -21,6 +21,7 @@
 		7179E40D2569C30500E904E9 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7179E40C2569C30500E904E9 /* PostView.swift */; };
 		71E34086256DF174006887F2 /* Exo2-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71E3407D256DF139006887F2 /* Exo2-Light.ttf */; };
 		71E3408A256DF175006887F2 /* Lora-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71E3407E256DF153006887F2 /* Lora-Regular.ttf */; };
+		71E3408F256E3F0F006887F2 /* Lora-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71E3408E256E3F0F006887F2 /* Lora-Medium.ttf */; };
 		99A1253B0B90EDC69B75DFE3 /* Pods_makeupTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B43B8A312773D7D6AEFF02B /* Pods_makeupTests.framework */; };
 		FF26D6232541163200526438 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF26D6222541163200526438 /* CameraView.swift */; };
 		FF26D6252541169700526438 /* InspoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF26D6242541169700526438 /* InspoView.swift */; };
@@ -65,6 +66,7 @@
 		7179E40C2569C30500E904E9 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		71E3407D256DF139006887F2 /* Exo2-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exo2-Light.ttf"; path = "../../../../../Downloads/Exo_2/static/Exo2-Light.ttf"; sourceTree = "<group>"; };
 		71E3407E256DF153006887F2 /* Lora-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lora-Regular.ttf"; path = "../../../../../Downloads/Lora/static/Lora-Regular.ttf"; sourceTree = "<group>"; };
+		71E3408E256E3F0F006887F2 /* Lora-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lora-Medium.ttf"; sourceTree = "<group>"; };
 		7B43B8A312773D7D6AEFF02B /* Pods_makeupTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_makeupTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DACE5A2392C9807012C6AEC /* Pods_makeup_makeupUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_makeup_makeupUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEC77997EF692E43BD8105C2 /* Pods-makeup.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-makeup.debug.xcconfig"; path = "Target Support Files/Pods-makeup/Pods-makeup.debug.xcconfig"; sourceTree = "<group>"; };
@@ -189,8 +191,9 @@
 		71E34061256DE9E5006887F2 /* fonts */ = {
 			isa = PBXGroup;
 			children = (
-				71E3407D256DF139006887F2 /* Exo2-Light.ttf */,
+				71E3408E256E3F0F006887F2 /* Lora-Medium.ttf */,
 				71E3407E256DF153006887F2 /* Lora-Regular.ttf */,
+				71E3407D256DF139006887F2 /* Exo2-Light.ttf */,
 			);
 			path = fonts;
 			sourceTree = "<group>";
@@ -322,6 +325,7 @@
 				716429FD254102A40010F0E3 /* LaunchScreen.storyboard in Resources */,
 				71E3408A256DF175006887F2 /* Lora-Regular.ttf in Resources */,
 				715BC48F256A44B4007F6127 /* GoogleService-Info.plist in Resources */,
+				71E3408F256E3F0F006887F2 /* Lora-Medium.ttf in Resources */,
 				716429FA254102A40010F0E3 /* Preview Assets.xcassets in Resources */,
 				71E34086256DF174006887F2 /* Exo2-Light.ttf in Resources */,
 				716429F7254102A40010F0E3 /* Assets.xcassets in Resources */,

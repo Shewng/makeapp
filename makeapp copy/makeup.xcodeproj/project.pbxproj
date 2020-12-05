@@ -20,6 +20,7 @@
 		71642A13254102A50010F0E3 /* makeupUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71642A12254102A50010F0E3 /* makeupUITests.swift */; };
 		7179E40D2569C30500E904E9 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7179E40C2569C30500E904E9 /* PostView.swift */; };
 		71B54F2825707DBF00CEC923 /* Exo2-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71B54F2725707DBF00CEC923 /* Exo2-Regular.ttf */; };
+		71E2E461257B39A30019F6CC /* Lora-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71E2E460257B39A30019F6CC /* Lora-Bold.ttf */; };
 		71E34086256DF174006887F2 /* Exo2-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71E3407D256DF139006887F2 /* Exo2-Light.ttf */; };
 		71E3408A256DF175006887F2 /* Lora-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71E3407E256DF153006887F2 /* Lora-Regular.ttf */; };
 		71E3408F256E3F0F006887F2 /* Lora-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71E3408E256E3F0F006887F2 /* Lora-Medium.ttf */; };
@@ -66,6 +67,7 @@
 		71642A14254102A50010F0E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7179E40C2569C30500E904E9 /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		71B54F2725707DBF00CEC923 /* Exo2-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Exo2-Regular.ttf"; sourceTree = "<group>"; };
+		71E2E460257B39A30019F6CC /* Lora-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lora-Bold.ttf"; sourceTree = "<group>"; };
 		71E3407D256DF139006887F2 /* Exo2-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Exo2-Light.ttf"; path = "../../../../../Downloads/Exo_2/static/Exo2-Light.ttf"; sourceTree = "<group>"; };
 		71E3407E256DF153006887F2 /* Lora-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lora-Regular.ttf"; path = "../../../../../Downloads/Lora/static/Lora-Regular.ttf"; sourceTree = "<group>"; };
 		71E3408E256E3F0F006887F2 /* Lora-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lora-Medium.ttf"; sourceTree = "<group>"; };
@@ -193,6 +195,7 @@
 		71E34061256DE9E5006887F2 /* fonts */ = {
 			isa = PBXGroup;
 			children = (
+				71E2E460257B39A30019F6CC /* Lora-Bold.ttf */,
 				71E3408E256E3F0F006887F2 /* Lora-Medium.ttf */,
 				71E3407E256DF153006887F2 /* Lora-Regular.ttf */,
 				71B54F2725707DBF00CEC923 /* Exo2-Regular.ttf */,
@@ -328,6 +331,7 @@
 				716429FD254102A40010F0E3 /* LaunchScreen.storyboard in Resources */,
 				71B54F2825707DBF00CEC923 /* Exo2-Regular.ttf in Resources */,
 				71E3408A256DF175006887F2 /* Lora-Regular.ttf in Resources */,
+				71E2E461257B39A30019F6CC /* Lora-Bold.ttf in Resources */,
 				715BC48F256A44B4007F6127 /* GoogleService-Info.plist in Resources */,
 				71E3408F256E3F0F006887F2 /* Lora-Medium.ttf in Resources */,
 				716429FA254102A40010F0E3 /* Preview Assets.xcassets in Resources */,

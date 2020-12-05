@@ -108,31 +108,29 @@ struct InspoView: View {
     init(tabSelection: Binding<Int>, postArray: Binding<[Post]>) {
         self._tabSelection = tabSelection
         self._postArray = postArray
-    
-        
     }
     */
 
     var body: some View {
-        Color.purple
-            .overlay(
+        
             NavigationView {
+                ZStack {
+                    Rectangle().foregroundColor(.bgColor).edgesIgnoringSafeArea(.all)
                 // LOCAL
                 if #available(iOS 14.0, *) {
-                    List {
+                    //List {
                         ScrollView(.vertical) {
-
                             VStack() {
                                 ForEach(postArray, id: \.id) { post in
-                                    //Spacer()
+                                    Spacer()
                                     InspoPostView(post: post)
-                                    //Spacer()
+                                        .background(Color.white)
+                                    Spacer()
                                 }
                             }
                         }
-                    }
-                    .padding(.leading, -20)
-                    .padding(.bottom, 50)
+                    //}
+                    //.padding(.leading, -20)
                     //.padding(.leading, -16)
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
@@ -150,8 +148,7 @@ struct InspoView: View {
                     // Fallback on earlier versions
                 }
             }
-        )
-            .edgesIgnoringSafeArea(.vertical)
+        }
     }
 }
 
@@ -187,10 +184,11 @@ struct InspoPostView: View {
             
             Text(post.date)
                 .foregroundColor(.grayColor)
-                .font(.custom("Lora-Regular", size: 12))
-                .offset(x: 295, y: 5)
+                .font(.custom("Exo2-Light", size: 12))
+                //.offset(x: 305, y: 5)
                 //.offset(x: 275, y: 5)
-                .padding(.top, 5)
+                .padding(.top, 8)
+                .alignmentGuide(.leading) { d in d[.leading] - 300}
             
             NavigationLink(destination: PostView(post: post)) {
                 if #available(iOS 14.0, *) {
@@ -207,8 +205,9 @@ struct InspoPostView: View {
                             .aspectRatio(contentMode: .fill)
                             .frame(width: UIScreen.main.bounds.width, height: 400)
                             .clipped()
-                        }
+                    }
                     .tabViewStyle(PageTabViewStyle())
+                    .frame(width: UIScreen.main.bounds.width, height: 400)
                     
                 } else {
                     // Fallback on earlier versions
@@ -218,17 +217,16 @@ struct InspoPostView: View {
             //title, description
             Text(self.post.title)
                 //.foregroundColor(.fontColor)
-                .font(.custom("Lora-Medium", size: 14))
+                .font(.custom("Lora-Bold", size: 14))
                 .padding(EdgeInsets(top: 5, leading: 10, bottom: 2.5, trailing: 10))
             
             Text(self.post.desc)
-                .foregroundColor(.grayColor)
+                //.foregroundColor(.grayColor)
                 .font(.custom("Lora-Regular", size: 14))
                 .padding(EdgeInsets(top: 2.5, leading: 10, bottom: 0, trailing: 10))
         
         }
         .padding(.bottom, 20)
-        .border(Color.grayColor, width: 1)
         
     }
 }

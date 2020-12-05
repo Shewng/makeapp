@@ -177,18 +177,31 @@ struct CameraView: View {
     }
     
     func getDate() -> some View {
-        let currentDate = Date()
-        let format = DateFormatter()
-        format.dateStyle = .long
+        let monthDate = Date()
+        let dayDate = Date()
+        let yearDate = Date()
+        let monthFormat = DateFormatter()
+        let dayFormat = DateFormatter()
+        let yearFormat = DateFormatter()
         
-        let d = format.string(from: currentDate)
-        date = d    // set state var
+        monthFormat.dateFormat = "MMMM"
+        dayFormat.dateFormat = "dd"
+        yearFormat.dateFormat = "yyyy"
+        
+        let month = monthFormat.string(from: monthDate)
+        let day = dayFormat.string(from: dayDate)
+        let year = yearFormat.string(from: yearDate)
+        
+        let stringDate = month.prefix(3) + " " + day + ", " + year
+        
+        
+        date = stringDate    // set state var
         
         return VStack(alignment: .leading) {
-            Text(d)
+            Text(date)
                 .foregroundColor(.grayColor)
                 .font(.system(size: 12))
-                .offset(x: -125)
+                .offset(x: -140)
         }
     }
     
@@ -241,7 +254,7 @@ struct CameraView: View {
                                     Print(vidList.count)
                                     
                                     VStack {
-                                        Text("Step " + String(i + 2))
+                                        Text("Step " + String(i + 1))
                                         
                                         player(index: i)
                                             .scaledToFill()
@@ -424,41 +437,7 @@ struct CameraView: View {
                                 useProxyTextViewInstruc(geometry)
                             }
                             
-                            /*
-                            if #available(iOS 14.0, *) {
-                                //ForEach
-                                TabView(selection: self.$tabIndex) {
-                                    VStack {
-                                        useProxyTextViewInstruc(geometry)
-                                    }
-                                    
-                                    .tag(1000)
-                                    
-                                    
-                                    ForEach(self.videoSettings.vidArray.indices, id: \.self) { i in
-                                        VStack {
-                                            useProxyTextViewInstruc(geometry)
-                                        }
-                                        .tag(i)
-                                    }
-                                    
-                                    VStack {
-                                        useProxyTextViewInstruc(geometry)
-                                    }
-                                    .tag(1001)
-                                }
-                                .tabViewStyle(PageTabViewStyle())
-                                .frame(width: UIScreen.main.bounds.width, height: 200)
-                                .border(Color.gray, width: 1)
-                                
-                            } else {
-                                // Fallback
-                            }
-                            */
-                            
                         }
-                        
-                        
                     }
                     .frame(maxWidth: .infinity)
                     
@@ -584,7 +563,7 @@ struct CameraView: View {
         */
         
         // append to existing array of posts
-        self.postArray.append(newPost)
+        self.postArray.insert(newPost, at: 0)
         
     }
 }

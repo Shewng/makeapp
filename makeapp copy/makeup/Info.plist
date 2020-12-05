@@ -7,6 +7,7 @@
 		<string>Lora-Regular.ttf</string>
 		<string>Lora-Medium.ttf</string>
 		<string>Exo2-Light.ttf</string>
+		<string>Exo2-Regular.ttf</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>

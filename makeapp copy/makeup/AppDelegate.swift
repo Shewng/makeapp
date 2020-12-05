@@ -15,6 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
          UIScrollView.appearance().bounces = false
+        
+        //UITableView.appearance().backgroundColor = .green
+        //UITableViewCell.appearance().backgroundColor = .yellow
         /*
         for family in UIFont.familyNames.sorted() {
             let names = UIFont.fontNames(forFamilyName: family)

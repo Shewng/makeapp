@@ -103,13 +103,7 @@ struct InspoView: View {
           }
         }
     }
-    
-    /*
-    init(tabSelection: Binding<Int>, postArray: Binding<[Post]>) {
-        self._tabSelection = tabSelection
-        self._postArray = postArray
-    }
-    */
+
 
     var body: some View {
         
@@ -118,20 +112,16 @@ struct InspoView: View {
                     Rectangle().foregroundColor(.bgColor).edgesIgnoringSafeArea(.all)
                 // LOCAL
                 if #available(iOS 14.0, *) {
-                    //List {
-                        ScrollView(.vertical) {
-                            VStack() {
-                                ForEach(postArray, id: \.id) { post in
-                                    Spacer()
-                                    InspoPostView(post: post)
-                                        .background(Color.white)
-                                    Spacer()
-                                }
+                    ScrollView(.vertical) {
+                        VStack() {
+                            ForEach(postArray, id: \.id) { post in
+                                Spacer()
+                                InspoPostView(post: post)
+                                    .background(Color.white)
+                                Spacer()
                             }
                         }
-                    //}
-                    //.padding(.leading, -20)
-                    //.padding(.leading, -16)
+                    }
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .navigationBarLeading) {
@@ -152,27 +142,6 @@ struct InspoView: View {
     }
 }
 
-struct loadImage: View {
-        
-    @ObservedObject var imageLoader:DataLoader
-    @State var image: UIImage = UIImage()
-
-    init(imageURL: String) {
-        imageLoader = DataLoader(urlString:imageURL)
-    }
-
-    var body: some View {
-        VStack {
-            Image(uiImage: image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: UIScreen.main.bounds.width, height: 400)
-                .clipped()
-        }.onReceive(imageLoader.didChange) { data in
-            self.image = UIImage(data: data) ?? UIImage()
-        }
-    }
-}
 
 struct InspoPostView: View {
     
@@ -184,9 +153,7 @@ struct InspoPostView: View {
             
             Text(post.date)
                 .foregroundColor(.grayColor)
-                .font(.custom("Exo2-Light", size: 12))
-                //.offset(x: 305, y: 5)
-                //.offset(x: 275, y: 5)
+                .font(.custom("Exo2-Regular", size: 12))
                 .padding(.top, 8)
                 .alignmentGuide(.leading) { d in d[.leading] - 300}
             
@@ -216,12 +183,10 @@ struct InspoPostView: View {
             
             //title, description
             Text(self.post.title)
-                //.foregroundColor(.fontColor)
                 .font(.custom("Lora-Bold", size: 14))
                 .padding(EdgeInsets(top: 5, leading: 10, bottom: 2.5, trailing: 10))
             
             Text(self.post.desc)
-                //.foregroundColor(.grayColor)
                 .font(.custom("Lora-Regular", size: 14))
                 .padding(EdgeInsets(top: 2.5, leading: 10, bottom: 0, trailing: 10))
         
@@ -246,12 +211,6 @@ struct InspoPreviewWrapper: View {
         InspoView(tabSelection: $code, postArray: $arr)
     }
 }
-
-//struct Post1 {
-//    let id: Int
-//    let title, description: String
-//}
-
 
 class Post: NSObject {
     
@@ -278,11 +237,25 @@ class Post: NSObject {
     }
 }
 
-class PostList: ObservableObject {
-    @Published var posts: [Post] = []
-    
-    init() {
-        posts = []
+struct loadImage: View {
+        
+    @ObservedObject var imageLoader:DataLoader
+    @State var image: UIImage = UIImage()
+
+    init(imageURL: String) {
+        imageLoader = DataLoader(urlString:imageURL)
+    }
+
+    var body: some View {
+        VStack {
+            Image(uiImage: image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: UIScreen.main.bounds.width, height: 400)
+                .clipped()
+        }.onReceive(imageLoader.didChange) { data in
+            self.image = UIImage(data: data) ?? UIImage()
+        }
     }
 }
 

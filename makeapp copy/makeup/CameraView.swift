@@ -85,10 +85,6 @@ struct CameraView: View {
     private let database = Database.database().reference()
     private let storage = Storage.storage().reference()
     
-    
-    @ObservedObject var model = Model() // list of pictures/videos
-    //@ObservedObject var vidArray = VideosData()
-    
     @EnvironmentObject var videoSettings: VideosData
     
     @State private var stateVideos: [URL] = []
@@ -143,7 +139,6 @@ struct CameraView: View {
     
     func useProxyDivider(_ proxy: GeometryProxy) -> some View {
         let screenWidth: CGFloat = proxy.size.width
-        let screenHeight: CGFloat = proxy.size.height
         
         return Divider().frame(width: screenWidth)
     }
@@ -241,10 +236,10 @@ struct CameraView: View {
                                     Image(uiImage: self.bareFaceImage)
                                         .resizable()
                                         .scaledToFill()
+                                        .aspectRatio(contentMode: .fill)
                                         .frame(width: 300, height: 300)
                                         .border(Color.grayColor, width: 1)
                                         .clipped()
-                                        //.padding()
                                         
                                 }
                                 .tag(1000)
@@ -261,7 +256,6 @@ struct CameraView: View {
                                             .frame(width: 300, height: 300)
                                             .border(Color.grayColor, width: 1)
                                             .clipped()
-                                            //.padding()
                                     }
                                     .tag(i)
                                 }
@@ -274,21 +268,21 @@ struct CameraView: View {
                                         .frame(width: 300, height: 300)
                                         .border(Color.grayColor, width: 1)
                                         .clipped()
-                                        //.padding()
                                     
                                 }
                                 .tag(1002)
                                 
+                                //last image
                                 VStack{
                                     Text("Last Image")
                                     
                                     Image(uiImage: self.bareFaceImageFinal)
                                         .resizable()
                                         .scaledToFill()
+                                        .aspectRatio(contentMode: .fill)
                                         .frame(width: 300, height: 300)
                                         .border(Color.grayColor, width: 1)
                                         .clipped()
-                                        //.padding()
                                     
                                 }
                                 .tag(1001)
@@ -303,28 +297,7 @@ struct CameraView: View {
                             // Fallback on earlier versions
                         }
                     }
-                    
-
-                        //.modifier(ScrollingHStackModifier(items: self.stateVideos.count + 2, itemWidth: 270, itemSpacing: 60, currentStep: self.$currentStep, imageIndex: self.$imageIndex, frameLength: self.$frameLength))
-                        
-                        
-                        // END OF FRAMES
-                        
-                        /*
-                        HStack {
-                            if (tabIndex == 1000) {
-                                Text("Step 1")
-                            } else if (tabIndex == 1001) {
-                                Text("Step " + String(stateVideos.count + 2))
-                            } else if (tabIndex == 1002){
-                                Text("Add Video Here!")
-                            }
-                            else {
-                                Text("Step " + String(pageIndex))
-                            }
-                        }.padding(.bottom, 15)
-                        */
-                        
+                   
                     
                     /**
                      BUTTONS
@@ -442,19 +415,14 @@ struct CameraView: View {
                     .frame(maxWidth: .infinity)
                     
                 } // end of scroll view
-                
                 .onTapGesture{ self.hideKeyboard() }
-                //.gesture(DragGesture().onChanged { _ in
-                //    self.hideKeyboard()
-                //})
-                
+
                 
                 .navigationBarTitle("Add new post", displayMode: .inline)
                 .navigationBarItems(
                     trailing:
                         HStack {
                             Button(action: {
-                                
                                 
                                 // Collect all pictures/videos/descriptions and send to InspoView
                                 self.tabSelection = 1
@@ -523,8 +491,6 @@ struct CameraView: View {
                 })
             })
         }
-        
-
         
         
         //add first picture to database
@@ -668,13 +634,11 @@ struct player : UIViewControllerRepresentable{
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<player>) -> AVPlayerViewController {
         
-        //frameLength += 1
         let controller = AVPlayerViewController()
         controller.videoGravity = .resizeAspectFill
         let player1 = AVPlayer(url: videoSettings.vidArray[index])
         controller.player = player1
         
-        //controller.player = vid
         return controller
     }
     
@@ -682,34 +646,6 @@ struct player : UIViewControllerRepresentable{
         
     }
 }
-
-
-class Frame: NSObject {
-    var id: Int
-    var name: String
-    var image: UIImage
-    
-    init(id: Int, name: String, image: UIImage) {
-        self.id = id
-        self.name = name
-        self.image = image
-    }
-}
-
-class Model: ObservableObject {
-    @Published var frames: [Frame] = []
-    @State var b1 = UIImage()
-    @State var b2 = UIImage()
-    
-    init() {
-        frames = [
-            Frame(id: 1, name: "Frame1", image: b1),
-            //Frame(id: 2, name: "Frame2", image: b2),
-        ]
-    }
-}
-
-
 
 struct CameraView_Previews: PreviewProvider {
     static var previews: some View {

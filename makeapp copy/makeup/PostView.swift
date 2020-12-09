@@ -32,19 +32,16 @@ struct PostView: View {
                 
                 Divider().frame(width: UIScreen.main.bounds.width).background(Color.gray)
                 
-                //Spacer()
             }
             
             //pics and videos
             VStack(alignment: .center) {
-                
-                //Spacer()
-                
+                                
                 if #available(iOS 14.0, *) {
                     TabView(selection: self.$innerPostIndex) {
                         //bare image
                         VStack() {
-                            Text("First Image")
+                            Text("Bare")
                             Image(uiImage: self.post.firstPic)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
@@ -55,7 +52,7 @@ struct PostView: View {
                         .tag(1000)
                         ForEach(0..<self.post.videos.count, id: \.self) { i in
                             VStack() {
-                                Text("Step" + String(i + 1))
+                                Text("Step " + String(i + 1))
                                 playerPost(newPostVideos: post.videos, index: i)
                                     .scaledToFill()
                                     .frame(width: UIScreen.main.bounds.width, height: 400)
@@ -65,7 +62,7 @@ struct PostView: View {
                         }
                         
                         VStack() {
-                            Text("Last Image")
+                            Text("Final")
                             Image(uiImage: self.post.lastPic)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
@@ -75,17 +72,16 @@ struct PostView: View {
                         .tag(1001)
                     }
                     .tabViewStyle(PageTabViewStyle())
-                    .frame(width: UIScreen.main.bounds.width, height: 430)
-                    .padding(.top, 5)
+                    .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
+                    .frame(width: UIScreen.main.bounds.width, height: 520)
+                    .padding(.top, -40)
+                    .padding(.bottom, -15)
                 }
-                //Spacer()
                 
                 Divider().frame(width: UIScreen.main.bounds.width).background(Color.gray)
             }
             
             VStack(alignment: .leading) {
-                
-                //Spacer()
                 
                 HStack() {
                     Image(systemName: "doc.plaintext")
@@ -98,8 +94,8 @@ struct PostView: View {
                 Text(self.post.instructions)
                     .font(.custom("Lora-Regular", size: 14))
                     .padding(.init(top: 5, leading: 10, bottom: 15, trailing: 10))
-                
             }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
         }
     }
 }
@@ -133,6 +129,5 @@ struct playerPost : UIViewControllerRepresentable{
     }
     
     func updateUIViewController(_ uiViewController: AVPlayerViewController, context: UIViewControllerRepresentableContext<playerPost>) {
-        
     }
 }

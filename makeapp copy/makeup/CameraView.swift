@@ -125,13 +125,6 @@ struct CameraView: View {
     @Binding var tabSelection: Int
     @Binding var postArray: [Post]
     
-    func addFrame() {
-        let id = model.frames.count + 1
-        let image = UIImage()
-        model.frames.append(Frame(id: id, name: "Frame\(id)", image: image))
-        frameLength = model.frames.count
-        
-    }
     
     func addVid(b:URL){
         stateVideos.append(b)

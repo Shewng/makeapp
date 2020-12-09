@@ -30,7 +30,6 @@ extension Array where Element: Hashable {
 
 struct InspoView: View {
     
-    @EnvironmentObject var postList: PostList
     @Binding var tabSelection: Int
     @Binding var postArray: [Post]
     
